@@ -1,0 +1,129 @@
+/* Homepage Background */
+.homepage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: radial-gradient(circle, #0f3b5a, #100f0f);
+    color: white;
+    font-family: "Poppins", sans-serif;
+    position: relative;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  /* Title */
+  .home-title {
+    font-size: 52px;
+    font-weight: 800;
+    margin-bottom: 15px;
+    margin-top: 50px;
+    text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.2);
+    text-transform: uppercase;
+  }
+  
+  /* Subtext */
+  .info-text {
+    font-size: 22px;
+    font-weight: 400;
+    color: #d1d1d1;
+    margin-bottom: 10px;
+  }
+  
+  /* Balance & Watch Video Button Section */
+  .top-right {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  /* Balance Display */
+  .balance {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Watch Video Button */
+  .video-button {
+    background: linear-gradient(45deg, #f4c531, #ffdd44);
+    color: black;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 4px 12px rgba(255, 204, 0, 0.2);
+  }
+  
+  .video-button:hover {
+    background: linear-gradient(45deg, #ffcc00, #f7b500);
+    transform: scale(1.05);
+  }
+  
+  /* Game Options */
+  .game-options {
+    display: flex;
+    gap: 40px;
+    margin-top: 30px;
+  }
+  
+  /* Roulette & Blackjack Buttons */
+  .roulette-button,
+  .blackjack-button {
+    font-size: 26px;
+    font-weight: bold;
+    padding: 18px 40px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+  }
+  
+  .roulette-button {
+    background: linear-gradient(45deg, #c0392b, #d94636);
+    color: white;
+  }
+  
+  .blackjack-button {
+    background: linear-gradient(45deg, #2980b9, #2b8bca);
+    color: white;
+  }
+  
+  .roulette-button:hover {
+    background: linear-gradient(45deg, #e74c3c, #ff5c5c);
+    transform: scale(1.1);
+  }
+  
+  .blackjack-button:hover {
+    background: linear-gradient(45deg, #3498db, #5dade2);
+    transform: scale(1.1);
+  }
+  
+  /* Bottom Subtext */
+  .start-text {
+    font-size: 22px;
+    font-weight: 500;
+    margin-top: 35px;
+    text-shadow: 1px 1px 8px rgba(0,0,0, 0.2);
+    animation: zoomInOut 2.0s infinite ease-in-out;
+  }
+  
+  /* Smooth Zoom Animation */
+  @keyframes zoomInOut {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  
