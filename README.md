@@ -7,6 +7,6 @@ Mindful Gambling is a web-based application designed to bring the excitement and
 ---
 
 ## 🚀 Features
-**Table style games** - Play your favorite casino games from the comfort of your home! 
+**Table style games** - Play your favorite casino games from the comfort of your home!  
 **Conscious Cash System** – Earn and wager in-game currency responsibly  
 **Watch & Earn** – Replenish balance by watching a mindful video  
