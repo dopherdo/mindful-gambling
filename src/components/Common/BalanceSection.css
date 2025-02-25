@@ -1,0 +1,40 @@
+/* Balance & Watch Video Section */
+.balance-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  /* Watch Video Button */
+  .video-button {
+    background: linear-gradient(45deg, #f4c531, #ffdd44);
+    color: black;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 4px 12px rgba(255, 204, 0, 0.5);
+  }
+  
+  .video-button:hover {
+    background: linear-gradient(45deg, #ffcc00, #f7b500);
+    transform: scale(1.05);
+  }
+  
+  /* Balance Display */
+  .balance {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
+  }
+  

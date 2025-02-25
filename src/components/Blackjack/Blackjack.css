@@ -1,0 +1,39 @@
+.blackjack-game {
+    text-align: center;
+    padding: 100px;
+    color: white;
+    background: linear-gradient(to bottom, #1b1b1b, #0a3d62);
+    min-height: 100vh;
+}
+  
+.hand {
+    padding: 5px;
+    margin: 20px;
+}
+
+.cards {
+    font-size: 24px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.buttons button, .back-button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+}
+
+.buttons button {
+    background: #f4c531;
+    color: black;
+}
+
+.back-button {
+    background: red;
+    color: white;
+}
