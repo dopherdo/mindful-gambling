@@ -5,21 +5,7 @@ import { BalanceContext } from "../../context/BalanceContext"; // Use Global Bal
 
 const generateDeck = () => {
   const suits = ["♠", "♥", "♦", "♣"];
-  const values = [
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "J",
-    "Q",
-    "K",
-    "A",
-  ];
+  const values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
   let deck = [];
   for (let suit of suits) {
     for (let value of values) {
@@ -76,12 +62,30 @@ const Blackjack = () => {
 
     // Initialize the deck & hands
     const newDeck = generateDeck();
+    const newPlayerHand = [newDeck.pop(), newDeck.pop()];
+    const newDealerHand = [newDeck.pop(), newDeck.pop()];
+
     setDeck(newDeck);
-    setPlayerHand([newDeck.pop(), newDeck.pop()]);
-    setDealerHand([newDeck.pop(), newDeck.pop()]);
+    setPlayerHand(newPlayerHand);
+    setDealerHand(newDealerHand);
     setGameOver(false);
     setMessage("");
     setGameStarted(true);
+
+    // **Auto-win if player starts with 21**
+    if (calculateHandValue(newPlayerHand) === 21) {
+      handleWin();
+    }
+  };
+
+  // Player Wins Instantly
+  const handleWin = () => {
+    const winnings = bet * 2;
+    setMessage(`You Win! +$${winnings}`);
+    const newBalance = balance + bet * 2;
+    setBalance(newBalance);
+    localStorage.setItem("balance", newBalance);
+    setGameOver(true);
   };
 
   // Player Hits
@@ -89,9 +93,14 @@ const Blackjack = () => {
     if (!gameOver) {
       const newHand = [...playerHand, deck.pop()];
       setPlayerHand(newHand);
-      if (calculateHandValue(newHand) > 21) {
+
+      const handValue = calculateHandValue(newHand);
+      if (handValue > 21) {
         setGameOver(true);
         setMessage("Bust! Dealer Wins!");
+      } else if (handValue === 21) {
+        handleWin(); // Auto-win if player hits 21
+        setMessage("BLACKJACK!!")
       }
     }
   };
@@ -111,7 +120,17 @@ const Blackjack = () => {
 
     const newHand = [...playerHand, deck.pop()];
     setPlayerHand(newHand);
-    stand();
+
+    const handValue = calculateHandValue(newHand);
+    if (handValue > 21) {
+      setGameOver(true);
+      setMessage("Bust! Dealer Wins!");
+    } else if (handValue === 21) {
+      handleWin(); // Auto-win if player hits 21
+      setMessage("BLACKJACK!!")
+    } else {
+      stand();
+    }
   };
 
   // Player Stands (Dealer's Turn)
@@ -129,20 +148,17 @@ const Blackjack = () => {
 
     let playerValue = calculateHandValue(playerHand);
     if (dealerValue > 21 || playerValue > dealerValue) {
-      setMessage("🎉 Player Wins!");
-      const newBalance = balance + bet * 2;
-      setBalance(newBalance);
-      localStorage.setItem("balance", newBalance);
+      handleWin();
     } else if (dealerValue === playerValue) {
-      setMessage("🤝 It's a Push!");
+      setMessage("It's a Push!");
       const newBalance = balance + bet;
       setBalance(newBalance);
       localStorage.setItem("balance", newBalance);
+      setGameOver(true);
     } else {
-      setMessage("❌ Dealer Wins!");
+      setMessage("Dealer Wins!");
+      setGameOver(true);
     }
-
-    setGameOver(true);
   };
 
   return (
@@ -151,10 +167,7 @@ const Blackjack = () => {
 
       {/* Balance Section */}
       <div className="balance-section">
-        <span className="conscious-cash">
-          {" "}
-          💰 Conscious Cash: <span> ${balance} </span>
-        </span>
+        <span className="conscious-cash"> Conscious Cash: <span> ${balance} </span> </span>
       </div>
 
       {/* Betting Section */}
@@ -168,9 +181,7 @@ const Blackjack = () => {
             max={balance}
             className="bet-input"
           />
-          <button onClick={placeBet} className="bet-button">
-            Deal Cards
-          </button>
+          <button onClick={placeBet} className="bet-button">Deal Cards</button>
         </div>
       )}
 
@@ -182,16 +193,10 @@ const Blackjack = () => {
             <div className="cards">
               {gameOver ? (
                 dealerHand.map((card, index) => (
-                  <span key={index}>
-                    {card.value}
-                    {card.suit}{" "}
-                  </span>
+                  <span key={index}>{card.value}{card.suit} </span>
                 ))
               ) : (
-                <span>
-                  {dealerHand[0].value}
-                  {dealerHand[0].suit} ❓
-                </span>
+                <span>{dealerHand[0].value}{dealerHand[0].suit} ❓</span>
               )}
             </div>
           </div>
@@ -200,10 +205,7 @@ const Blackjack = () => {
             <h2>Your Hand</h2>
             <div className="cards">
               {playerHand.map((card, index) => (
-                <span key={index}>
-                  {card.value}
-                  {card.suit}{" "}
-                </span>
+                <span key={index}>{card.value}{card.suit} </span>
               ))}
             </div>
           </div>
@@ -212,27 +214,14 @@ const Blackjack = () => {
 
           {!gameOver && (
             <div className="buttons">
-              <button onClick={hit}>Hit</button>
-              <button onClick={stand}>Stand</button>
-              <button className="double-button" onClick={double}>
-                Double
-              </button>
+              <button onClick={hit} disabled={calculateHandValue(playerHand) === 21}>Hit</button>
+              <button onClick={stand} disabled={calculateHandValue(playerHand) === 21}>Stand</button>
+              <button className="double-button" onClick={double} disabled={calculateHandValue(playerHand) === 21}>Double</button>
             </div>
           )}
 
           {gameOver && (
-            <button
-              className="play-again-button"
-              onClick={() => {
-                setDeck(generateDeck());
-                setPlayerHand([deck.pop(), deck.pop()]);
-                setDealerHand([deck.pop(), deck.pop()]);
-                setGameOver(false);
-                setMessage("");
-                setBet(10);
-                setGameStarted(false);
-              }}
-            >
+            <button className="play-again-button" onClick={() => window.location.reload()}>
               Play Again
             </button>
           )}

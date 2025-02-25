@@ -17,7 +17,7 @@ const Homepage = () => {
         <button className="video-button" onClick={() => navigate("/mindful-video")}>
           📺 Watch Mindful Video to Earn Conscious Cash!
         </button>
-        <span className="conscious-cash"> 💰 Conscious Cash: <span> ${balance} </span></span>
+        <span className="conscious-cash"> Conscious Cash: <span> ${balance} </span></span>
       </div>
 
       {/* Middle Game Options */}
