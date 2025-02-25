@@ -14,3 +14,4 @@ Mindful Gambling is a web-based application designed to bring the excitement and
 ## 🛠️ Future Features
 - +$XX and -$XX animations on balance when placing bets and finishing games
 - Add casino table mat textures to the blackjack game
+- Add splitting

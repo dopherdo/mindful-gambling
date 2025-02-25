@@ -8,6 +8,9 @@
 # testing
 /coverage
 
+#ignore env private keys
+.env
+
 # production
 /build
 
