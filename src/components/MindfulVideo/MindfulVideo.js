@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import "./MindfulVideo.css";
 import { BalanceContext } from "../../context/BalanceContext";
 
-console.log("API Key:", process.env.REACT_APP_YOUTUBE_API_KEY);
 const YOUTUBE_API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
 
 const MindfulVideo = () => {
@@ -37,13 +36,13 @@ const MindfulVideo = () => {
     const newBalance = balance + 50;
     setBalance(newBalance);
     localStorage.setItem("balance", newBalance);
-    alert("✅ You finished the video! Earned 50 Conscious Cash!");
+    alert("You finished the video! Earned 50 Conscious Cash!");
     navigate("/");
   };
 
   return (
     <div className="video-page">
-      <h2>🎥 Watch This Mindful Gambling Awareness Video</h2>
+      <h2>Watch This Mindful Gambling Awareness Video</h2>
 
       {videoId ? (
         <iframe
@@ -58,7 +57,7 @@ const MindfulVideo = () => {
         <p>Loading video...</p>
       )}
 
-      <p>⏳ You must finish the video to receive Conscious Cash.</p>
+      <p>You must finish the video to receive your 50 Conscious Cash.</p>
       <button className="video-done" onClick={handleVideoCompletion} disabled={!videoId}>
         ✅ I Finished the Video
       </button>
