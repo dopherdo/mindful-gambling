@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { BalanceProvider } from "../context/BalanceContext"; 
+import { BalanceProvider } from "../context/BalanceContext";
 import Homepage from "./Homepage/Homepage";
 import Blackjack from "./Blackjack/Blackjack";
 

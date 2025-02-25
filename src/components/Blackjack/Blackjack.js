@@ -5,7 +5,21 @@ import { BalanceContext } from "../../context/BalanceContext"; // Use Global Bal
 
 const generateDeck = () => {
   const suits = ["♠", "♥", "♦", "♣"];
-  const values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
+  const values = [
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "J",
+    "Q",
+    "K",
+    "A",
+  ];
   let deck = [];
   for (let suit of suits) {
     for (let value of values) {
@@ -137,7 +151,10 @@ const Blackjack = () => {
 
       {/* Balance Section */}
       <div className="balance-section">
-        <span className="conscious-cash"> 💰 Conscious Cash: <span> ${balance} </span></span>
+        <span className="conscious-cash">
+          {" "}
+          💰 Conscious Cash: <span> ${balance} </span>
+        </span>
       </div>
 
       {/* Betting Section */}
@@ -151,7 +168,9 @@ const Blackjack = () => {
             max={balance}
             className="bet-input"
           />
-          <button onClick={placeBet} className="bet-button">Place Bet</button>
+          <button onClick={placeBet} className="bet-button">
+            Deal Cards
+          </button>
         </div>
       )}
 
@@ -161,16 +180,31 @@ const Blackjack = () => {
           <div className="hand">
             <h2>Dealer's Hand</h2>
             <div className="cards">
-              {gameOver
-                ? dealerHand.map((card, index) => <span key={index}>{card.value}{card.suit} </span>)
-                : <span>{dealerHand[0].value}{dealerHand[0].suit} ❓</span>}
+              {gameOver ? (
+                dealerHand.map((card, index) => (
+                  <span key={index}>
+                    {card.value}
+                    {card.suit}{" "}
+                  </span>
+                ))
+              ) : (
+                <span>
+                  {dealerHand[0].value}
+                  {dealerHand[0].suit} ❓
+                </span>
+              )}
             </div>
           </div>
 
           <div className="hand">
             <h2>Your Hand</h2>
             <div className="cards">
-              {playerHand.map((card, index) => <span key={index}>{card.value}{card.suit} </span>)}
+              {playerHand.map((card, index) => (
+                <span key={index}>
+                  {card.value}
+                  {card.suit}{" "}
+                </span>
+              ))}
             </div>
           </div>
 
@@ -180,15 +214,34 @@ const Blackjack = () => {
             <div className="buttons">
               <button onClick={hit}>Hit</button>
               <button onClick={stand}>Stand</button>
-              <button className="double-button" onClick={double}>Double</button>
+              <button className="double-button" onClick={double}>
+                Double
+              </button>
             </div>
           )}
 
-          {gameOver && <button className="play-again-button" onClick={() => window.location.reload()}>Play Again</button>}
+          {gameOver && (
+            <button
+              className="play-again-button"
+              onClick={() => {
+                setDeck(generateDeck());
+                setPlayerHand([deck.pop(), deck.pop()]);
+                setDealerHand([deck.pop(), deck.pop()]);
+                setGameOver(false);
+                setMessage("");
+                setBet(10);
+                setGameStarted(false);
+              }}
+            >
+              Play Again
+            </button>
+          )}
         </>
       )}
 
-      <button className="back-button" onClick={() => navigate("/")}>Back to Home</button>
+      <button className="back-button" onClick={() => navigate("/")}>
+        Back to Home
+      </button>
     </div>
   );
 };
