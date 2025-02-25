@@ -6,7 +6,7 @@ const Homepage = () => {
     <div className="homepage">
 
       {/* Top text */}
-      <h2 className="info-text">Enjoy the fun of gambling without the risk!</h2>
+      <h2 className="info-text">🧘 Play with purpose, pause with mindfulness 🧘</h2>
 
       {/* Title */}
       <h1 className="home-title">🎰🎲 Mindful Gambling 🎲🎰</h1>
@@ -14,7 +14,7 @@ const Homepage = () => {
       {/* Top Right Section */}
       <div className="top-right">
         <button className="video-button"> 📺 Watch Mindful Video to Earn Conscious Cash! </button>
-        <span className="balance"> 💰 Conscious Cash: <span> $100 </span></span>
+        <span className="conscious-cash"> 💰 Conscious Cash: <span> $100 </span></span>
       </div>
 
       {/* Middle Game Options */}
