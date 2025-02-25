@@ -1,26 +1,22 @@
-import React from "react";
-import { useContext } from "react";
-import "./Homepage.css";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import "./Homepage.css";
 import { BalanceContext } from "../../context/BalanceContext";
 
 const Homepage = () => {
-  const navigate = useNavigate(); // Hook must be inside the functional component
-
-  const { balance, setBalance } = useContext(BalanceContext);
+  const navigate = useNavigate();
+  const { balance, setBalance } = useContext(BalanceContext); // Use Context API for balance
 
   const handleWatchVideo = () => {
     alert("You watched a video and earned 50 Conscious Cash!");
-    setBalance(balance + 50); // Updates global balance instantly
+    const newBalance = balance + 50;  // Explicitly calculate new balance
+    setBalance(newBalance);           // Update state
+    localStorage.setItem("balance", newBalance); // Sync with localStorage
   };
 
   return (
     <div className="homepage">
-
-      {/* Top text */}
       <h2 className="info-text">🧘 Play with purpose, pause with mindfulness 🧘</h2>
-
-      {/* Title */}
       <h1 className="home-title">🎰🎲 Mindful Gambling 🎲🎰</h1>
 
       {/* Top Right Section */}
@@ -33,17 +29,9 @@ const Homepage = () => {
 
       {/* Middle Game Options */}
       <div className="game-options">
-        <button className="roulette-button"onClick={() => navigate("/roulette")}> 
-          🎡 Play Roulette 
-        </button>
-
-        <button className="blackjack-button" onClick={() => navigate("/blackjack")}> 
-          🃏 Play Blackjack 
-        </button>
-
+        <button className="blackjack-button" onClick={() => navigate("/blackjack")}> 🃏 Play Blackjack </button>
       </div>
 
-      {/* Zooming text below */}
       <h3 className="start-text"> Play a game or watch a mindful video to get started! </h3>
     </div>
   );
