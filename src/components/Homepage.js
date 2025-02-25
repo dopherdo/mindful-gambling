@@ -9,7 +9,7 @@ const Homepage = () => {
       <h2 className="info-text">Enjoy the fun of gambling without the risk!</h2>
 
       {/* Title */}
-      <h1 className="home-title">🎲🎰 Mindful Gambling 🎲🎰</h1>
+      <h1 className="home-title">🎰🎲 Mindful Gambling 🎲🎰</h1>
 
       {/* Top Right Section */}
       <div className="top-right">
