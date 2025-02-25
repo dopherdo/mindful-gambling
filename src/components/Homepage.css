@@ -115,7 +115,7 @@
   .start-text {
     font-size: 22px;
     font-weight: 500;
-    margin-top: 35px;
+    margin-top: 45px;
     text-shadow: 1px 1px 8px rgba(0,0,0, 0.2);
     animation: zoomInOut 2.0s infinite ease-in-out;
   }
