@@ -25,6 +25,9 @@ const Homepage = () => {
         <button className="blackjack-button" onClick={() => navigate("/blackjack")}>
           🃏 Play Blackjack
         </button>
+        <button className="roulette-button" onClick={() => navigate("/roulette")}>
+          🎡 Play Roulette
+        </button>
       </div>
 
       <h3 className="start-text"> Play a game or watch a mindful video to get started! </h3>

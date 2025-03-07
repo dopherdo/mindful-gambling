@@ -4,6 +4,7 @@ import { BalanceProvider } from "../context/BalanceContext";
 import Homepage from "./Homepage/Homepage";
 import Blackjack from "./Blackjack/Blackjack";
 import MindfulVideo from "./MindfulVideo/MindfulVideo"; // Import new page
+import Roulette from "./Roulette/Roulette";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="/blackjack" element={<Blackjack />} />
+          <Route path="/roulette" element={<Roulette />} />
           <Route path="/mindful-video" element={<MindfulVideo />} /> {/* New Route */}
         </Routes>
       </Router>
