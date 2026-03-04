@@ -112,8 +112,7 @@ const MindfulVideo = () => {
       {videoId ? (
         <iframe
           title="Mindful Gambling Video"
-          width="800"
-          height="450"
+          className="video-iframe"
           src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&enablejsapi=1`}
           frameBorder="0"
           allow="autoplay; encrypted-media"

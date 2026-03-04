@@ -163,7 +163,7 @@ const Blackjack = () => {
 
   return (
     <div className="blackjack-game">
-      <h1>🃏 Mindful Blackjack 🃏</h1>
+      <h1>Mindful Blackjack</h1>
 
       {/* Balance Section */}
       <div className="balance-section">
@@ -196,7 +196,7 @@ const Blackjack = () => {
                   <span key={index}>{card.value}{card.suit} </span>
                 ))
               ) : (
-                <span>{dealerHand[0].value}{dealerHand[0].suit} ❓</span>
+                <span>{dealerHand[0].value}{dealerHand[0].suit} ?</span>
               )}
             </div>
           </div>

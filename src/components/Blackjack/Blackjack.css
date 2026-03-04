@@ -3,171 +3,187 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  color: white;
-  font-family: "Open Sans", sans-serif;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 20%, #1a1a1a 0%, #0a0a0a 60%, #000000 100%);
+  color: var(--text-primary);
+  font-family: 'Lato', sans-serif;
   text-align: center;
   position: relative;
-  overflow: hidden; /* Ensures no scrolling from background */
+  padding: 40px 20px;
+  box-sizing: border-box;
+  animation: pageEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Background Image (untouchable & fixed) */
-.blackjack-game::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: url("/public/blackjack-texture.jpg") center/cover no-repeat;
-  z-index: -1; /* Places it behind all elements */
-}
-
-/* Ensures elements remain interactable */
-.blackjack-game * {
-  position: relative;
-  z-index: 1;
-}
-
-/* Game Title */
 h1 {
-  font-size: 48px;
-  font-weight: bold;
-  margin-bottom: 20px;
+  font-size: clamp(22px, 5vw, 40px);
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin-bottom: clamp(12px, 3vw, 24px);
+  margin-top: 0;
+  color: var(--text-primary);
 }
 
-/* Balance Section */
 .balance-section {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 16px;
+  right: 16px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 8px;
 }
 
-/* Conscious Cash Text */
 .conscious-cash {
-  font-size: 20px;
-  font-weight: bold;
-  background: rgba(255, 255, 255, 0.2);
-  padding: 10px 15px;
-  border-radius: 10px;
+  font-size: clamp(11px, 2vw, 14px);
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  padding: 6px 14px;
+  border-radius: 50px;
+  white-space: nowrap;
 }
 
-/* Betting Section */
+.conscious-cash span {
+  color: var(--text-primary);
+}
+
 .betting-section {
-  margin-top: 10px;
+  margin-top: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 10px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: clamp(16px, 4vw, 28px) clamp(20px, 6vw, 40px);
+  width: min(320px, 90vw);
+  box-sizing: border-box;
 }
 
 .bet-input {
-  width: 120px;
-  padding: 8px;
-  font-size: 18px;
-  border-radius: 5px;
-  border: 1px solid white;
+  width: 100%;
+  max-width: 140px;
+  padding: 10px 12px;
+  font-size: clamp(15px, 3vw, 18px);
+  font-family: 'Lato', sans-serif;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
   text-align: center;
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
-  margin-bottom: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.bet-input:focus {
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .bet-button {
-  background: #f4c531;
-  color: black;
-  padding: 10px 15px;
-  font-size: 18px;
-  font-weight: bold;
+  background: var(--text-primary);
+  color: #000;
+  padding: 10px 36px;
+  font-size: clamp(13px, 2.5vw, 16px);
+  font-weight: 900;
+  font-family: 'Lato', sans-serif;
   border: none;
-  border-radius: 8px;
+  border-radius: 50px;
   cursor: pointer;
-  transition: 0.3s ease-in-out;
+  transition: opacity 0.2s ease;
+  letter-spacing: 0.03em;
+  width: 100%;
 }
 
 .bet-button:hover {
-  background: #ffcc00;
+  opacity: 0.85;
 }
 
-/* Hand Display */
 .hand {
-  margin-top: 20px;
+  margin-top: clamp(12px, 3vw, 24px);
+}
+
+.hand h2 {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  margin-top: 0;
 }
 
 .cards {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  font-size: 24px;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 10px 15px;
-  border-radius: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: clamp(16px, 4vw, 22px);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  padding: 12px 20px;
+  border-radius: 16px;
+  max-width: 90vw;
 }
 
-/* Buttons */
 .buttons {
-  margin-top: 20px;
+  margin-top: clamp(12px, 3vw, 24px);
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
 }
 
 button {
-  background: #2980b9;
-  color: white;
-  padding: 10px 15px;
-  font-size: 20px;
-  font-weight: bold;
-  border: none;
-  border-radius: 10px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+  padding: 8px clamp(16px, 4vw, 28px);
+  font-size: clamp(13px, 2.5vw, 16px);
+  font-weight: 600;
+  font-family: 'Lato', sans-serif;
+  border-radius: 50px;
   cursor: pointer;
-  transition: 0.3s ease-in-out;
+  transition: background 0.2s ease;
 }
 
 button:hover {
-  background: #3498db;
+  background: var(--glass-bg-hover);
 }
 
-/* Double Button */
-.double-button {
-  background: #c0392b;
-}
-
-.double-button:hover {
-  background: #e74c3c;
-}
-
-/* Play Again Button */
 .play-again-button {
-  margin-top: 20px;
-  background: #2ecc71;
+  margin-top: clamp(12px, 3vw, 24px);
+  background: var(--text-primary);
+  color: #000;
+  border: none;
+  font-weight: 900;
+  border-radius: 50px;
 }
 
 .play-again-button:hover {
-  background: #27ae60;
+  opacity: 0.85;
+  background: var(--text-primary);
 }
 
-/* Back to Home Button */
 .back-button {
-  margin-top: 20px;
-  background: #e67e22;
+  margin-top: 12px;
+  color: var(--text-muted);
+  border-color: rgba(255, 255, 255, 0.06);
+  font-size: clamp(11px, 2vw, 14px);
 }
 
 .back-button:hover {
-  background: #d35400;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  h1 {
-    font-size: 36px;
-  }
-  .bet-input {
-    width: 100px;
-  }
-  .bet-button,
-  button {
-    font-size: 16px;
-  }
+  background: var(--glass-bg);
+  border-color: var(--glass-border);
+  color: var(--text-secondary);
 }

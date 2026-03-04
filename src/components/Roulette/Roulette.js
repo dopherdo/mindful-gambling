@@ -55,9 +55,9 @@ const Roulette = () => {
             const newBalance = balance + winnings;
             setBalance(newBalance);
             localStorage.setItem("balance", newBalance);
-            setOutcome(`You win! 🎉 +$${winnings}`);
+            setOutcome(`You win! +$${winnings}`);
         } else {
-            setOutcome("You lose! 😞");
+            setOutcome("You lose.");
         }
     };
 
