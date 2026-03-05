@@ -98,11 +98,6 @@ const MindfulVideo = () => {
     navigate("/mindful");
   };
 
-  // Cancel button: Returns home without the reward
-  const handleCancel = () => {
-    navigate("/mindful");
-  };
-
   return (
     <div className="video-page">
       <h2>Watch This Mindful Gambling Awareness Video</h2>
@@ -130,7 +125,7 @@ const MindfulVideo = () => {
         <button className="emergency-button" onClick={handleEmergencyReward}>
           DEMO: Grant Reward
         </button>
-        <button className="cancel-button" onClick={() => navigate("/")}>
+        <button className="cancel-button" onClick={() => navigate("/mindful")}>
           Return Home
         </button>
       </div>

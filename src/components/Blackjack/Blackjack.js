@@ -57,20 +57,6 @@ const Blackjack = () => {
   const navigate = useNavigate();
   const { balance, setBalance } = useContext(BalanceContext);
   const { currentUser } = useAuth();
-  const [deck, setDeck] = useState(generateDeck());
-  const [playerHand, setPlayerHand] = useState([]);
-  const [dealerHand, setDealerHand] = useState([]);
-  const [gameOver, setGameOver] = useState(false);
-  const [message, setMessage] = useState("");
-  const [bet, setBet] = useState(10);
-  const [gameStarted, setGameStarted] = useState(false);
-
-  // Function to start a round after betting
-  const placeBet = () => {
-    if (bet > balance) {
-      alert("Not enough Conscious Cash to place this bet.");
-      return;
-    }
 
   // phase: "betting" | "exiting" | "dealing" | "playing" | "gameover"
   const [phase, setPhase] = useState("betting");
@@ -105,34 +91,6 @@ const Blackjack = () => {
     setBusy(val);
   };
 
-  // Player Wins Instantly
-  const handleWin = () => {
-    const winnings = bet * 2;
-    setMessage(`You Win! +$${winnings}`);
-    const newBalance = balance + bet * 2;
-    setBalance(newBalance);
-    localStorage.setItem("balance", newBalance);
-    setGameOver(true);
-    if (currentUser) {
-      updateStats(currentUser.uid, "blackjack", { won: true, wagered: bet, profit: winnings });
-      updateBiggestWin(currentUser.uid, winnings);
-    }
-  };
-
-  // Player Hits
-  const hit = () => {
-    if (!gameOver) {
-      const newHand = [...playerHand, deck.pop()];
-      setPlayerHand(newHand);
-
-      const handValue = calculateHandValue(newHand);
-      if (handValue > 21) {
-        setGameOver(true);
-        setMessage("Bust! Dealer Wins!");
-        if (currentUser) updateStats(currentUser.uid, "blackjack", { won: false, wagered: bet, profit: 0 });
-      } else if (handValue === 21) {
-        handleWin(); // Auto-win if player hits 21
-        setMessage("BLACKJACK!!")
   // ── Betting ───────────────────────────────────────────────────────────────
   const addChip = amt => {
     if (bet + amt > balance) return;
@@ -160,15 +118,29 @@ const Blackjack = () => {
     const dTotal = total(dcRef.current);
     const dBust = dTotal > 21;
     let payout = 0;
+    let totalProfit = 0;
     const res = phRef.current.map((hand, i) => {
       const pt = total(hand);
       const hb = hbRef.current[i];
-      if (pt > 21) return "Bust";
-      if (dBust || pt > dTotal) { payout += hb * 2; return `Win +${hb}`; }
-      if (pt === dTotal) { payout += hb; return "Push"; }
+      if (pt > 21) {
+        if (currentUser) updateStats(currentUser.uid, "blackjack", { won: false, wagered: hb, profit: 0 });
+        return "Bust";
+      }
+      if (dBust || pt > dTotal) {
+        payout += hb * 2;
+        totalProfit += hb;
+        if (currentUser) updateStats(currentUser.uid, "blackjack", { won: true, wagered: hb, profit: hb });
+        return `Win +${hb}`;
+      }
+      if (pt === dTotal) {
+        payout += hb;
+        return "Push";
+      }
+      if (currentUser) updateStats(currentUser.uid, "blackjack", { won: false, wagered: hb, profit: 0 });
       return "Loss";
     });
     if (payout > 0) syncBalance(balRef.current + payout);
+    if (totalProfit > 0 && currentUser) updateBiggestWin(currentUser.uid, totalProfit);
     setResults(res);
     setPhase("gameover");
     setBusyBoth(false);
@@ -262,8 +234,12 @@ const Blackjack = () => {
         res = "Push";
       } else {
         const profit = Math.floor(betAmount * 1.5);
-        payout = betAmount + profit; // return stake + 3:2 profit
+        payout = betAmount + profit;
         res = `Blackjack! +$${profit}`;
+        if (currentUser) {
+          updateStats(currentUser.uid, "blackjack", { won: true, wagered: betAmount, profit });
+          updateBiggestWin(currentUser.uid, profit);
+        }
       }
       syncBalance(balRef.current + payout);
       setResults([res]);
@@ -272,23 +248,6 @@ const Blackjack = () => {
       return;
     }
 
-    const newBet = bet * 2;
-    const newBalance = balance - bet; // Deduct only the extra amount
-    setBalance(newBalance);
-    localStorage.setItem("balance", newBalance);
-    setBet(newBet);
-
-    const newHand = [...playerHand, deck.pop()];
-    setPlayerHand(newHand);
-
-    const handValue = calculateHandValue(newHand);
-    if (handValue > 21) {
-      setGameOver(true);
-      setMessage("Bust! Dealer Wins!");
-      if (currentUser) updateStats(currentUser.uid, "blackjack", { won: false, wagered: newBet, profit: 0 });
-    } else if (handValue === 21) {
-      handleWin(); // Auto-win if player hits 21
-      setMessage("BLACKJACK!!")
     setPhase("playing");
     setBusyBoth(false);
   };
@@ -335,22 +294,6 @@ const Blackjack = () => {
     await advanceHand();
   };
 
-    setDeck(newDeck);
-    setDealerHand([...dealerHand]);
-
-    let playerValue = calculateHandValue(playerHand);
-    if (dealerValue > 21 || playerValue > dealerValue) {
-      handleWin();
-    } else if (dealerValue === playerValue) {
-      setMessage("It's a Push!");
-      const newBalance = balance + bet;
-      setBalance(newBalance);
-      localStorage.setItem("balance", newBalance);
-      setGameOver(true);
-    } else {
-      setMessage("Dealer Wins!");
-      setGameOver(true);
-      if (currentUser) updateStats(currentUser.uid, "blackjack", { won: false, wagered: bet, profit: 0 });
   const doSplit = async () => {
     if (busyRef.current) return;
     const idx = ahiRef.current;
@@ -471,7 +414,7 @@ const Blackjack = () => {
           <button className="deal-btn" onClick={() => deal()} disabled={bet < 1 || bet > balance}>
             Deal Cards
           </button>
-          <button className="bj-back" onClick={() => navigate("/")}>
+          <button className="bj-back" onClick={() => navigate("/mindful")}>
             Back to Home
           </button>
         </div>
@@ -537,7 +480,7 @@ const Blackjack = () => {
                     <div className="rebet-spacer" />
                   )}
                 </div>
-                <button className="bj-back gameover-back" onClick={() => navigate("/")}>
+                <button className="bj-back gameover-back" onClick={() => navigate("/mindful")}>
                   Back to Home
                 </button>
               </div>
@@ -545,10 +488,6 @@ const Blackjack = () => {
           </div>
         </div>
       )}
-
-      <button className="back-button" onClick={() => navigate("/mindful")}>
-        Back to Home
-      </button>
     </div>
   );
 };
