@@ -91,7 +91,7 @@ const Blackjack = () => {
     setGameOver(true);
     if (currentUser) {
       updateStats(currentUser.uid, "blackjack", { won: true, wagered: bet, profit: winnings });
-      updateBiggestWin(currentUser.uid, winnings, 0);
+      updateBiggestWin(currentUser.uid, winnings);
     }
   };
 
@@ -238,7 +238,7 @@ const Blackjack = () => {
         </>
       )}
 
-      <button className="back-button" onClick={() => navigate("/")}>
+      <button className="back-button" onClick={() => navigate("/mindful")}>
         Back to Home
       </button>
     </div>

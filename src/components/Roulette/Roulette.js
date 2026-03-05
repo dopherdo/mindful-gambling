@@ -61,7 +61,7 @@ const Roulette = () => {
             setOutcome(`You win! +$${winnings}`);
             if (currentUser) {
                 updateStats(currentUser.uid, "roulette", { won: true, wagered: betAmount, profit: winnings });
-                updateBiggestWin(currentUser.uid, winnings, 0);
+                updateBiggestWin(currentUser.uid, winnings);
             }
         } else {
             setOutcome("You lose.");
@@ -112,7 +112,7 @@ const Roulette = () => {
             <div className="wheel-result">{result}</div>
             <h2>{outcome}</h2>
             
-            <button className="back-button" onClick={() => navigate("/")}>Back to Home</button>
+            <button className="back-button" onClick={() => navigate("/mindful")}>Back to Home</button>
         </div>
     );
 };

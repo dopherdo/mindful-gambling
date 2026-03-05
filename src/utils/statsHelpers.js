@@ -1,4 +1,4 @@
-import { doc, updateDoc, increment, serverTimestamp } from "firebase/firestore";
+import { doc, updateDoc, increment, serverTimestamp, runTransaction } from "firebase/firestore";
 import { db } from "../firebase";
 
 /**
@@ -37,12 +37,20 @@ export const updateStats = async (userId, gameType, { won, wagered, profit }) =>
   }
 };
 
-export const updateBiggestWin = async (userId, profit, currentBiggest) => {
-  if (!userId || profit <= currentBiggest) return;
+export const updateBiggestWin = async (userId, profit) => {
+  if (!userId || profit <= 0) return;
   try {
-    await updateDoc(doc(db, "users", userId), {
-      "stats.biggestWin": profit,
-      lastUpdated: serverTimestamp(),
+    const userRef = doc(db, "users", userId);
+    await runTransaction(db, async (transaction) => {
+      const snap = await transaction.get(userRef);
+      if (!snap.exists()) return;
+      const current = snap.data().stats?.biggestWin ?? 0;
+      if (profit > current) {
+        transaction.update(userRef, {
+          "stats.biggestWin": profit,
+          lastUpdated: serverTimestamp(),
+        });
+      }
     });
   } catch (err) {
     console.error("Failed to update biggestWin:", err);

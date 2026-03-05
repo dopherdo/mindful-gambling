@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { db } from "../../firebase";
+import { updateProfile } from "firebase/auth";
+import { db, auth } from "../../firebase";
 import { useAuth } from "../../context/AuthContext";
 import "./Profile.css";
 
@@ -26,12 +27,13 @@ const Profile = () => {
   const saveDisplayName = async () => {
     if (!newName.trim()) return;
     await updateDoc(doc(db, "users", currentUser.uid), { displayName: newName.trim() });
+    await updateProfile(auth.currentUser, { displayName: newName.trim() });
     setEditing(false);
   };
 
   const handleLogout = async () => {
     await logout();
-    navigate("/");
+    navigate("/", { replace: true });
   };
 
   if (!userData) return <div className="profile-page"><p className="profile-loading">Loading...</p></div>;
@@ -44,7 +46,7 @@ const Profile = () => {
   return (
     <div className="profile-page">
       <div className="profile-header">
-        <button className="back-button" onClick={() => navigate("/")}>← Home</button>
+        <button className="back-button" onClick={() => navigate("/")}>← BJ Central</button>
         <button className="logout-button" onClick={handleLogout}>Sign Out</button>
       </div>
 

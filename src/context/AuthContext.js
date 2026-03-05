@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }) => {
       email,
       createdAt: serverTimestamp(),
       balance: 100,
+      chips: 500,
       stats: {
         totalGamesPlayed: 0,
         totalWins: 0,
@@ -35,6 +36,11 @@ export const AuthProvider = ({ children }) => {
         videosWatched: 0,
         blackjackGames: 0,
         rouletteGames: 0,
+      },
+      ccStats: {
+        handsPlayed: 0,
+        correctCounts: 0,
+        accuracy: 0,
       },
       lastUpdated: serverTimestamp(),
     });
@@ -54,6 +60,7 @@ export const AuthProvider = ({ children }) => {
         email: credential.user.email,
         createdAt: serverTimestamp(),
         balance: 100,
+        chips: 500,
         stats: {
           totalGamesPlayed: 0,
           totalWins: 0,
@@ -63,6 +70,11 @@ export const AuthProvider = ({ children }) => {
           videosWatched: 0,
           blackjackGames: 0,
           rouletteGames: 0,
+        },
+        ccStats: {
+          handsPlayed: 0,
+          correctCounts: 0,
+          accuracy: 0,
         },
         lastUpdated: serverTimestamp(),
       });

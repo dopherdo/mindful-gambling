@@ -1,0 +1,29 @@
+.cc-page {
+  min-height: 100dvh;
+  background: var(--bg-base);
+  padding: 1.5rem 1rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.cc-header {
+  margin-bottom: 3rem;
+}
+
+.cc-coming-soon {
+  text-align: center;
+  margin-top: 6rem;
+}
+
+.cc-title {
+  font-size: clamp(1.8rem, 6vw, 3rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 1rem;
+}
+
+.cc-sub {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1rem;
+  margin: 0;
+}

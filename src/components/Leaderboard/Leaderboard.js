@@ -23,7 +23,7 @@ const Leaderboard = () => {
   return (
     <div className="leaderboard-page">
       <div className="leaderboard-header">
-        <button className="back-button" onClick={() => navigate("/")}>← Home</button>
+        <button className="back-button" onClick={() => navigate("/")}>← BJ Central</button>
         <h1 className="leaderboard-title">Leaderboard</h1>
       </div>
 

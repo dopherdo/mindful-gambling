@@ -17,7 +17,7 @@ const Homepage = () => {
 
       {/* Top Right Section */}
       <div className="top-right">
-        <button className="video-button" onClick={() => navigate("/mindful-video")}>
+        <button className="video-button" onClick={() => navigate("/mindful/video")}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{marginRight: "8px", verticalAlign: "middle"}}>
             <path d="M8 5v14l11-7z"/>
           </svg>
@@ -27,6 +27,7 @@ const Homepage = () => {
           <>
             <button className="nav-link-button" onClick={() => navigate("/leaderboard")}>Leaderboard</button>
             <button className="nav-link-button" onClick={() => navigate("/profile")}>{currentUser.displayName || "Profile"}</button>
+            <button className="nav-link-button" onClick={() => navigate("/")}>← BJ Central</button>
             <button className="nav-link-button signout" onClick={logout}>Sign Out</button>
           </>
         ) : (
@@ -46,10 +47,10 @@ const Homepage = () => {
 
       {/* Game Options */}
       <div className="game-options">
-        <button className="blackjack-button" onClick={() => navigate("/blackjack")}>
+        <button className="blackjack-button" onClick={() => navigate("/mindful/blackjack")}>
           Blackjack
         </button>
-        <button className="roulette-button" onClick={() => navigate("/roulette")}>
+        <button className="roulette-button" onClick={() => navigate("/mindful/roulette")}>
           Roulette
         </button>
       </div>

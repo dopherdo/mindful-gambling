@@ -51,7 +51,7 @@ const MindfulVideo = () => {
       setBalance(newBalance);
       localStorage.setItem("balance", newBalance);
       if (currentUser) incrementVideosWatched(currentUser.uid);
-      navigate("/");
+      navigate("/mindful");
     }
   }, [videoFinished, balance, setBalance, navigate, currentUser]);
 
@@ -94,12 +94,12 @@ const MindfulVideo = () => {
     const newBalance = balance + 50;
     setBalance(newBalance);
     localStorage.setItem("balance", newBalance);
-    navigate("/");
+    navigate("/mindful");
   };
 
   // Cancel button: Returns home without the reward
   const handleCancel = () => {
-    navigate("/");
+    navigate("/mindful");
   };
 
   return (
