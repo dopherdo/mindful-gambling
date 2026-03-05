@@ -144,7 +144,7 @@
 }
 
 .chip-clear {
-  color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
 .deal-btn {
@@ -164,18 +164,19 @@
 }
 
 .deal-btn:hover:not(:disabled) {
-  opacity: 0.85;
+  background: #e8e8e8;
+  filter: brightness(1.08);
 }
 
 .deal-btn:disabled {
-  opacity: 0.35;
+  opacity: 0.3;
   cursor: not-allowed;
 }
 
 .bj-back {
   background: none;
   border: none;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: clamp(11px, 2vw, 13px);
   font-family: 'Lato', sans-serif;
   font-weight: 600;
@@ -185,24 +186,51 @@
 }
 
 .bj-back:hover {
-  color: var(--text-secondary);
+  color: var(--text-primary);
   background: none;
 }
 
 /* ── Game area ───────────────────────────────────────────────────────────── */
 .bj-ingame {
   justify-content: flex-start;
-  padding-top: 96px;
+  /* No padding-top — game-area fills full height so divider lands at 50dvh */
 }
 
 .game-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 640px;
+  overflow: hidden;
+  animation: pageEnter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Each zone = exactly half the viewport → divider at 50dvh */
+.dealer-zone {
+  height: 50dvh;
+  flex: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(12px, 3vw, 20px);
-  width: 100%;
-  max-width: 640px;
-  animation: pageEnter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  justify-content: flex-end;
+  padding-top: 96px;   /* clear title + balance chip */
+  padding-bottom: clamp(16px, 3vw, 28px);
+  border-bottom: 1px solid var(--glass-border);
+  box-sizing: border-box;
+}
+
+.player-zone {
+  height: 50dvh;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: clamp(16px, 3vw, 28px);
+  gap: clamp(12px, 2.5vw, 20px);
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .hand-area {
@@ -210,6 +238,10 @@
   flex-direction: column;
   align-items: center;
   gap: 6px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 8px 12px;
+  transition: border-color 0.4s ease, background 0.4s ease;
 }
 
 .hand-label {
@@ -218,34 +250,51 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--text-secondary);
+  transition: color 0.4s ease;
 }
 
 .active-hand .hand-label {
   color: var(--text-primary);
 }
 
+/* Result states */
+.hand-win {
+  border-color: rgba(74, 222, 128, 0.4);
+  background: rgba(74, 222, 128, 0.07);
+}
+.hand-win .hand-label { color: #4ade80; }
+
+.hand-loss {
+  border-color: rgba(248, 113, 113, 0.35);
+  background: rgba(248, 113, 113, 0.07);
+}
+.hand-loss .hand-label { color: #f87171; }
+
+.hand-push {
+  border-color: rgba(250, 204, 21, 0.3);
+  background: rgba(250, 204, 21, 0.05);
+}
+.hand-push .hand-label { color: #facc15; }
+
 .cards-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row-reverse;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 6px;
 }
 
 .hand-bet {
   font-size: clamp(10px, 1.8vw, 12px);
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-weight: 600;
 }
 
 .player-hands {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   flex-wrap: wrap;
   justify-content: center;
-  width: 100%;
-  margin-top: clamp(18px, 4vw, 32px);
-  padding-top: clamp(18px, 4vw, 32px);
-  border-top: 1px solid var(--glass-border);
 }
 
 /* ── Playing cards ───────────────────────────────────────────────────────── */
@@ -352,4 +401,54 @@
   align-items: center;
   gap: 10px;
   width: min(260px, 90vw);
+}
+
+.gameover-btn-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.gameover-btn-row .deal-btn {
+  flex: 1;
+}
+
+.rebet-spacer {
+  width: 44px;
+  flex-shrink: 0;
+}
+
+.rebet-btn {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 20px;
+  font-family: 'Lato', sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+  line-height: 1;
+}
+
+.rebet-btn:hover {
+  background: var(--glass-bg-hover);
+}
+
+.gameover-back {
+  margin-top: clamp(12px, 3vw, 20px);
+}
+
+/* Extra separation between deal/play-again and back to home in betting wrapper */
+.betting-wrapper .bj-back {
+  margin-top: clamp(10px, 2.5vw, 16px);
 }

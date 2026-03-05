@@ -1,11 +1,10 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Homepage.css";
-import { BalanceContext } from "../../context/BalanceContext";
+import ConsciousCash from "../ConsciousCash/ConsciousCash";
 
 const Homepage = () => {
   const navigate = useNavigate();
-  const { balance } = useContext(BalanceContext);
   const [showModal, setShowModal] = useState(false);
 
   return (
@@ -21,7 +20,7 @@ const Homepage = () => {
           </svg>
           Mindful Video
         </button>
-        <span className="conscious-cash">Conscious Cash: <span>${balance}</span></span>
+        <ConsciousCash />
       </div>
 
       {/* Game Options */}

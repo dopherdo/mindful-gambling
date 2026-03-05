@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MindfulVideo.css";
 import { BalanceContext } from "../../context/BalanceContext";
+import ConsciousCash from "../ConsciousCash/ConsciousCash";
 
 const YOUTUBE_API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
 
@@ -24,7 +25,7 @@ const MindfulVideo = () => {
 
     try {
       const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&q=mindful+gambling+awareness&type=video&maxResults=10&key=${YOUTUBE_API_KEY}`
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&q=mindful+gambling+awareness&type=video&videoDuration=short&maxResults=10&key=${YOUTUBE_API_KEY}`
       );
       const data = await response.json();
       if (data.items && data.items.length > 0) {
@@ -44,7 +45,7 @@ const MindfulVideo = () => {
   const handleVideoCompletion = useCallback(() => {
     if (!videoFinished) {
       setVideoFinished(true);
-      const newBalance = balance + 50;
+      const newBalance = balance + 10;
       setBalance(newBalance);
       localStorage.setItem("balance", newBalance);
       navigate("/");
@@ -85,51 +86,43 @@ const MindfulVideo = () => {
     }
   }, [videoId, loadYouTubeAPI]);
 
-  // Emergency button: Instantly rewards 50 Conscious Cash
+  // Emergency button: Instantly rewards 10 Conscious Cash
   const handleEmergencyReward = () => {
-    const newBalance = balance + 50;
+    const newBalance = balance + 10;
     setBalance(newBalance);
     localStorage.setItem("balance", newBalance);
     navigate("/");
   };
 
-  // Cancel button: Returns home without the reward
-  const handleCancel = () => {
-    navigate("/");
-  };
-
   return (
     <div className="video-page">
-      <h2> Watch This Mindful Gambling Awareness Video </h2>
+      <h2>Watch This Mindful Gambling Awareness Video</h2>
       {/* Balance Section */}
       <div className="balance-section">
-        <span className="conscious-cash">
-          {" "}
-          Conscious Cash: <span> ${balance} </span>
-        </span>
+        <ConsciousCash />
       </div>
 
       {videoId ? (
         <iframe
           title="Mindful Gambling Video"
           className="video-iframe"
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&enablejsapi=1`}
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&enablejsapi=1&disablekb=1&modestbranding=1`}
           frameBorder="0"
           allow="autoplay; encrypted-media"
-          allowFullScreen
+          style={{ pointerEvents: "none" }}
         ></iframe>
       ) : (
         <p>Loading video...</p>
       )}
 
-      <p>You must finish the video to receive your 50 Conscious Cash.</p>
+      <p>Finish the video to earn +$10 Conscious Cash.</p>
 
       <div className="video-buttons">
         <button className="emergency-button" onClick={handleEmergencyReward}>
           DEMO: Grant Reward
         </button>
-        <button className="cancel-button" onClick={handleCancel}>
-          Cancel & Return Home
+        <button className="cancel-button" onClick={() => navigate("/")}>
+          Return Home
         </button>
       </div>
     </div>

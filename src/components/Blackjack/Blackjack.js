@@ -2,6 +2,7 @@ import React, { useState, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Blackjack.css";
 import { BalanceContext } from "../../context/BalanceContext";
+import ConsciousCash from "../ConsciousCash/ConsciousCash";
 
 // ─── Deck utilities ───────────────────────────────────────────────────────────
 let _cardId = 0;
@@ -46,7 +47,8 @@ const Card = ({ card }) => {
   );
 };
 
-const CHIPS = [5, 10, 25, 50, 100];
+const CHIPS_ROW1 = [1, 5, 10, 25];
+const CHIPS_ROW2 = [50, 100];
 
 // ─── Component ────────────────────────────────────────────────────────────────
 const Blackjack = () => {
@@ -63,6 +65,7 @@ const Blackjack = () => {
   const [handBets, setHandBets] = useState([]);
   const [results, setResults] = useState([]);
   const [showDealerTotal, setShowDealerTotal] = useState(false);
+  const [lastBet, setLastBet] = useState(0);
 
   // Refs for stale-closure-free async access
   const deckRef = useRef([]);
@@ -116,7 +119,7 @@ const Blackjack = () => {
       const pt = total(hand);
       const hb = hbRef.current[i];
       if (pt > 21) return "Bust";
-      if (dBust || pt > dTotal) { payout += hb * 2; return `Win +${hb * 2}`; }
+      if (dBust || pt > dTotal) { payout += hb * 2; return `Win +${hb}`; }
       if (pt === dTotal) { payout += hb; return "Push"; }
       return "Loss";
     });
@@ -152,12 +155,17 @@ const Blackjack = () => {
   };
 
   // ── Deal ──────────────────────────────────────────────────────────────────
-  const deal = async () => {
-    if (busyRef.current || bet < 5) return;
+  const deal = async (betAmount = bet) => {
+    if (busyRef.current || betAmount < 1) return;
     setBusyBoth(true);
-    syncBalance(balRef.current - bet);
-    setPhase("exiting");
-    await sleep(380);
+    syncBalance(balRef.current - betAmount);
+    setLastBet(betAmount);
+
+    // Only animate the betting section out when coming from betting phase
+    if (phase === "betting") {
+      setPhase("exiting");
+      await sleep(380);
+    }
 
     const deck = buildDeck();
     deckRef.current = deck;
@@ -165,10 +173,10 @@ const Blackjack = () => {
     phRef.current = [[]];
     dcRef.current = [];
     ahiRef.current = 0;
-    hbRef.current = [bet];
+    hbRef.current = [betAmount];
     setDealerCards([]);
     setPlayerHands([[]]);
-    setHandBets([bet]);
+    setHandBets([betAmount]);
     setActiveHandIdx(0);
     setResults([]);
     setShowDealerTotal(false);
@@ -205,11 +213,12 @@ const Blackjack = () => {
       await sleep(400);
       let res, payout;
       if (isBlackjack(revealed)) {
-        payout = bet;
+        payout = betAmount;
         res = "Push";
       } else {
-        payout = Math.floor(bet * 2.5);
-        res = `Blackjack! +${payout}`;
+        const profit = Math.floor(betAmount * 1.5);
+        payout = betAmount + profit; // return stake + 3:2 profit
+        res = `Blackjack! +$${profit}`;
       }
       syncBalance(balRef.current + payout);
       setResults([res]);
@@ -341,9 +350,7 @@ const Blackjack = () => {
       </h1>
 
       <div className="balance-section">
-        <span className="conscious-cash">
-          Conscious Cash: <span>${balance}</span>
-        </span>
+        <ConsciousCash />
       </div>
 
       {/* Betting screen */}
@@ -352,7 +359,19 @@ const Blackjack = () => {
           <div className="betting-section">
             <div className="bet-display">${bet}</div>
             <div className="chip-row">
-              {CHIPS.map(amt => (
+              {CHIPS_ROW1.map(amt => (
+                <button
+                  key={amt}
+                  className="chip-btn"
+                  onClick={() => addChip(amt)}
+                  disabled={bet + amt > balance}
+                >
+                  +{amt}
+                </button>
+              ))}
+            </div>
+            <div className="chip-row">
+              {CHIPS_ROW2.map(amt => (
                 <button
                   key={amt}
                   className="chip-btn"
@@ -371,7 +390,7 @@ const Blackjack = () => {
               </button>
             </div>
           </div>
-          <button className="deal-btn" onClick={deal} disabled={bet < 5 || bet > balance}>
+          <button className="deal-btn" onClick={() => deal()} disabled={bet < 1 || bet > balance}>
             Deal Cards
           </button>
           <button className="bj-back" onClick={() => navigate("/")}>
@@ -383,54 +402,69 @@ const Blackjack = () => {
       {/* Game area */}
       {inGame && (
         <div className="game-area">
-          <div className="hand-area">
-            <div className="hand-label">
-              Dealer{showDealerTotal ? ` — ${total(dealerCards)}` : ""}
-            </div>
-            <div className="cards-row">
-              {dealerCards.map(c => <Card key={c.id} card={c} />)}
+          <div className="dealer-zone">
+            <div className="hand-area">
+              <div className="hand-label">
+                Dealer{showDealerTotal ? ` — ${total(dealerCards)}` : ""}
+              </div>
+              <div className="cards-row">
+                {dealerCards.map(c => <Card key={c.id} card={c} />)}
+              </div>
             </div>
           </div>
 
-          <div className="player-hands">
-            {playerHands.map((hand, hi) => {
-              const ht = total(hand);
-              const res = results[hi];
-              const active = hi === activeHandIdx && phase === "playing";
-              return (
-                <div key={hi} className={`hand-area${active ? " active-hand" : ""}`}>
-                  <div className="hand-label">
-                    {playerHands.length > 1 ? `Hand ${hi + 1} ` : "You "}
-                    — {ht}{res ? ` · ${res}` : ""}
+          <div className="player-zone">
+            <div className="player-hands">
+              {playerHands.map((hand, hi) => {
+                const ht = total(hand);
+                const res = results[hi];
+                const active = hi === activeHandIdx && phase === "playing";
+                const rc = !res ? "" : (res.startsWith("Win") || res.startsWith("Blackjack")) ? " hand-win" : res === "Push" ? " hand-push" : " hand-loss";
+                return (
+                  <div key={hi} className={`hand-area${active ? " active-hand" : ""}${rc}`}>
+                    <div className="hand-label">
+                      {playerHands.length > 1 ? `Hand ${hi + 1} ` : "You "}
+                      — {ht}{res ? ` · ${res}` : ""}
+                    </div>
+                    <div className="cards-row">
+                      {hand.map(c => <Card key={c.id} card={c} />)}
+                    </div>
+                    {handBets[hi] != null && (
+                      <div className="hand-bet">Bet: ${handBets[hi]}</div>
+                    )}
                   </div>
-                  <div className="cards-row">
-                    {hand.map(c => <Card key={c.id} card={c} />)}
-                  </div>
-                  {handBets[hi] != null && (
-                    <div className="hand-bet">Bet: ${handBets[hi]}</div>
+                );
+              })}
+            </div>
+
+            {phase === "playing" && (
+              <div className="action-btns">
+                <button onClick={hit} disabled={!canHit}>Hit</button>
+                <button onClick={stand} disabled={!canStand}>Stand</button>
+                <button onClick={doDouble} disabled={!canDouble}>Double</button>
+                <button onClick={doSplit} disabled={!canSplit}>Split</button>
+              </div>
+            )}
+
+            {phase === "gameover" && (
+              <div className="gameover-actions">
+                <div className="gameover-btn-row">
+                  <div className="rebet-spacer" />
+                  <button className="deal-btn" onClick={playAgain}>Play Again</button>
+                  {lastBet > 0 && lastBet <= balance ? (
+                    <button className="rebet-btn" onClick={() => deal(lastBet)} title="Rebet same amount">
+                      ↺
+                    </button>
+                  ) : (
+                    <div className="rebet-spacer" />
                   )}
                 </div>
-              );
-            })}
+                <button className="bj-back gameover-back" onClick={() => navigate("/")}>
+                  Back to Home
+                </button>
+              </div>
+            )}
           </div>
-
-          {phase === "playing" && (
-            <div className="action-btns">
-              <button onClick={hit} disabled={!canHit}>Hit</button>
-              <button onClick={stand} disabled={!canStand}>Stand</button>
-              <button onClick={doDouble} disabled={!canDouble}>Double</button>
-              <button onClick={doSplit} disabled={!canSplit}>Split</button>
-            </div>
-          )}
-
-          {phase === "gameover" && (
-            <div className="gameover-actions">
-              <button className="deal-btn" onClick={playAgain}>Play Again</button>
-              <button className="bj-back" onClick={() => navigate("/")}>
-                Back to Home
-              </button>
-            </div>
-          )}
         </div>
       )}
     </div>

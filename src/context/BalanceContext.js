@@ -5,8 +5,8 @@ export const BalanceContext = createContext();
 
 export const BalanceProvider = ({ children }) => {
   const [balance, setBalance] = useState(() => {
-    const savedBalance = localStorage.getItem("balance");
-    return savedBalance !== null ? parseInt(savedBalance, 10) : 100; // Keep 0 if balance is 0
+    const parsed = parseInt(localStorage.getItem("balance"), 10);
+    return isNaN(parsed) ? 100 : parsed;
   });
 
   // Sync balance with localStorage whenever it changes
