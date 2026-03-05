@@ -2,12 +2,15 @@ import React, { useContext, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MindfulVideo.css";
 import { BalanceContext } from "../../context/BalanceContext";
+import { useAuth } from "../../context/AuthContext";
+import { incrementVideosWatched } from "../../utils/statsHelpers";
 
 const YOUTUBE_API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
 
 const MindfulVideo = () => {
   const navigate = useNavigate();
   const { balance, setBalance } = useContext(BalanceContext);
+  const { currentUser } = useAuth();
   const [videoId, setVideoId] = useState(null);
   const [videoFinished, setVideoFinished] = useState(false);
 
@@ -47,9 +50,10 @@ const MindfulVideo = () => {
       const newBalance = balance + 50;
       setBalance(newBalance);
       localStorage.setItem("balance", newBalance);
+      if (currentUser) incrementVideosWatched(currentUser.uid);
       navigate("/");
     }
-  }, [videoFinished, balance, setBalance, navigate]); // No changes to dependencies
+  }, [videoFinished, balance, setBalance, navigate, currentUser]);
 
   // Detect when the video ends
   const checkVideoCompletion = useCallback(() => {

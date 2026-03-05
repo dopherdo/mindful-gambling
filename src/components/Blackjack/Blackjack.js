@@ -1,7 +1,9 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Blackjack.css";
-import { BalanceContext } from "../../context/BalanceContext"; // Use Global Balance Context
+import { BalanceContext } from "../../context/BalanceContext";
+import { useAuth } from "../../context/AuthContext";
+import { updateStats, updateBiggestWin } from "../../utils/statsHelpers";
 
 const generateDeck = () => {
   const suits = ["♠", "♥", "♦", "♣"];
@@ -41,6 +43,7 @@ const calculateHandValue = (hand) => {
 const Blackjack = () => {
   const navigate = useNavigate();
   const { balance, setBalance } = useContext(BalanceContext);
+  const { currentUser } = useAuth();
   const [deck, setDeck] = useState(generateDeck());
   const [playerHand, setPlayerHand] = useState([]);
   const [dealerHand, setDealerHand] = useState([]);
@@ -86,6 +89,10 @@ const Blackjack = () => {
     setBalance(newBalance);
     localStorage.setItem("balance", newBalance);
     setGameOver(true);
+    if (currentUser) {
+      updateStats(currentUser.uid, "blackjack", { won: true, wagered: bet, profit: winnings });
+      updateBiggestWin(currentUser.uid, winnings, 0);
+    }
   };
 
   // Player Hits
@@ -98,6 +105,7 @@ const Blackjack = () => {
       if (handValue > 21) {
         setGameOver(true);
         setMessage("Bust! Dealer Wins!");
+        if (currentUser) updateStats(currentUser.uid, "blackjack", { won: false, wagered: bet, profit: 0 });
       } else if (handValue === 21) {
         handleWin(); // Auto-win if player hits 21
         setMessage("BLACKJACK!!")
@@ -125,6 +133,7 @@ const Blackjack = () => {
     if (handValue > 21) {
       setGameOver(true);
       setMessage("Bust! Dealer Wins!");
+      if (currentUser) updateStats(currentUser.uid, "blackjack", { won: false, wagered: newBet, profit: 0 });
     } else if (handValue === 21) {
       handleWin(); // Auto-win if player hits 21
       setMessage("BLACKJACK!!")
@@ -158,6 +167,7 @@ const Blackjack = () => {
     } else {
       setMessage("Dealer Wins!");
       setGameOver(true);
+      if (currentUser) updateStats(currentUser.uid, "blackjack", { won: false, wagered: bet, profit: 0 });
     }
   };
 

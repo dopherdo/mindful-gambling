@@ -1,6 +1,8 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { BalanceContext } from "../../context/BalanceContext";
+import { useAuth } from "../../context/AuthContext";
+import { updateStats, updateBiggestWin } from "../../utils/statsHelpers";
 
 //CSS file
 import "./Roulette.css";
@@ -8,6 +10,7 @@ import "./Roulette.css";
 const Roulette = () => {
     const navigate = useNavigate();
     const { balance, setBalance } = useContext(BalanceContext);
+    const { currentUser } = useAuth();
     const [betType, setBetType] = useState(null);
     const [betValue, setBetValue] = useState(null);
     const [betAmount, setBetAmount] = useState(10);
@@ -56,8 +59,15 @@ const Roulette = () => {
             setBalance(newBalance);
             localStorage.setItem("balance", newBalance);
             setOutcome(`You win! +$${winnings}`);
+            if (currentUser) {
+                updateStats(currentUser.uid, "roulette", { won: true, wagered: betAmount, profit: winnings });
+                updateBiggestWin(currentUser.uid, winnings, 0);
+            }
         } else {
             setOutcome("You lose.");
+            if (currentUser) {
+                updateStats(currentUser.uid, "roulette", { won: false, wagered: betAmount, profit: 0 });
+            }
         }
     };
 
