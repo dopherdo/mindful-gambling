@@ -35,6 +35,35 @@
   letter-spacing: 0.02em;
 }
 
+.nav-link-button {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  font-size: clamp(11px, 2vw, 13px);
+  font-weight: 600;
+  font-family: 'Lato', sans-serif;
+  padding: 6px 14px;
+  border-radius: 50px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.nav-link-button:hover {
+  background: var(--glass-bg-hover);
+}
+
+.nav-link-button.signout {
+  color: #f87171;
+}
+
+/* Profile icon inside top-right row: override absolute positioning */
+.top-right .profile-icon-btn {
+  position: static;
+}
+
 /* Top right — shrinks gracefully */
 .top-right {
   position: absolute;

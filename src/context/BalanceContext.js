@@ -11,28 +11,19 @@ export const BalanceProvider = ({ children }) => {
     const saved = localStorage.getItem("balance");
     return saved !== null ? parseInt(saved, 10) : 100;
   });
-  const [migrationPending, setMigrationPending] = useState(false);
   const syncTimeoutRef = useRef(null);
 
   // When user logs in, load their balance from Firestore
   useEffect(() => {
     if (!currentUser) return;
-
     const loadBalance = async () => {
       const snap = await getDoc(doc(db, "users", currentUser.uid));
       if (snap.exists()) {
-        const firestoreBalance = snap.data().balance;
-        const localBalance = parseInt(localStorage.getItem("balance"), 10);
-
-        // Offer migration if guest had more than the default 100
-        if (localBalance > 100) {
-          setMigrationPending(true);
-        } else {
-          setBalanceState(firestoreBalance);
-        }
+        const firestoreBalance = snap.data().balance ?? 100;
+        setBalanceState(firestoreBalance);
+        localStorage.setItem("balance", firestoreBalance);
       }
     };
-
     loadBalance();
   }, [currentUser]);
 
@@ -52,22 +43,8 @@ export const BalanceProvider = ({ children }) => {
     }
   };
 
-  const acceptMigration = async () => {
-    const localBalance = parseInt(localStorage.getItem("balance"), 10);
-    setBalance(localBalance);
-    setMigrationPending(false);
-  };
-
-  const declineMigration = async () => {
-    const snap = await getDoc(doc(db, "users", currentUser.uid));
-    if (snap.exists()) {
-      setBalanceState(snap.data().balance);
-    }
-    setMigrationPending(false);
-  };
-
   return (
-    <BalanceContext.Provider value={{ balance, setBalance, migrationPending, acceptMigration, declineMigration }}>
+    <BalanceContext.Provider value={{ balance, setBalance }}>
       {children}
     </BalanceContext.Provider>
   );

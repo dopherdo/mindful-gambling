@@ -5,6 +5,7 @@
   justify-content: center;
   background: var(--bg-base);
   padding: 1rem;
+  animation: pageEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .auth-card {

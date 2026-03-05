@@ -1,20 +1,21 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Homepage.css";
-import { BalanceContext } from "../../context/BalanceContext";
 import { useAuth } from "../../context/AuthContext";
 import ConsciousCash from "../ConsciousCash/ConsciousCash";
+import BJCentralBack from "../BJCentralBack/BJCentralBack";
 
 const Homepage = () => {
   const navigate = useNavigate();
-  const { migrationPending, acceptMigration, declineMigration } = useContext(BalanceContext);
-  const { currentUser, logout } = useAuth();
+const { currentUser, logout } = useAuth();
   const [showModal, setShowModal] = useState(false);
 
   return (
     <div className="homepage">
       <h2 className="info-text">Make every bet a mindful one.</h2>
       <h1 className="home-title">Mindful Gambling</h1>
+
+      <BJCentralBack />
 
       {/* Top Right Section */}
       <div className="top-right">
@@ -27,8 +28,11 @@ const Homepage = () => {
         {currentUser ? (
           <>
             <button className="nav-link-button" onClick={() => navigate("/leaderboard")}>Leaderboard</button>
-            <button className="nav-link-button" onClick={() => navigate("/profile")}>{currentUser.displayName || "Profile"}</button>
-            <button className="nav-link-button" onClick={() => navigate("/")}>← BJ Central</button>
+            <button className="profile-icon-btn" onClick={() => navigate("/profile")} title={currentUser.displayName || "Profile"}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+              </svg>
+            </button>
             <button className="nav-link-button signout" onClick={logout}>Sign Out</button>
           </>
         ) : (
@@ -36,15 +40,6 @@ const Homepage = () => {
         )}
         <ConsciousCash />
       </div>
-
-      {/* Balance migration prompt */}
-      {migrationPending && (
-        <div className="migration-banner">
-          <span>You have ${parseInt(localStorage.getItem("balance"), 10)} as a guest. Keep it on your account?</span>
-          <button onClick={acceptMigration}>Yes, keep it</button>
-          <button onClick={declineMigration}>No, use account balance</button>
-        </div>
-      )}
 
       {/* Game Options */}
       <div className="game-options">

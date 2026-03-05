@@ -35,6 +35,59 @@ code {
     monospace;
 }
 
+/* ── BJ Central back button — shared across all top-level game pages ── */
+.bj-central-back {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  font-size: clamp(11px, 2vw, 13px);
+  font-weight: 600;
+  font-family: 'Lato', sans-serif;
+  padding: 6px 14px;
+  border-radius: 50px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease;
+  z-index: 10;
+}
+
+.bj-central-back:hover {
+  background: var(--glass-bg-hover);
+  color: var(--text-primary);
+}
+
+/* ── Profile icon button — shared across all pages ── */
+.profile-icon-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+  padding: 0;
+  z-index: 10;
+}
+
+.profile-icon-btn:hover {
+  background: var(--glass-bg-hover);
+}
+
 @keyframes pageEnter {
   from {
     opacity: 0;
