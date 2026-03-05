@@ -10,6 +10,9 @@ export const BalanceProvider = ({ children }) => {
   const [balance, setBalanceState] = useState(() => {
     const saved = localStorage.getItem("balance");
     return saved !== null ? parseInt(saved, 10) : 100;
+  const [balance, setBalance] = useState(() => {
+    const parsed = parseInt(localStorage.getItem("balance"), 10);
+    return isNaN(parsed) ? 100 : parsed;
   });
   const [migrationPending, setMigrationPending] = useState(false);
   const syncTimeoutRef = useRef(null);

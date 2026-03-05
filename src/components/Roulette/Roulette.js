@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { BalanceContext } from "../../context/BalanceContext";
 import { useAuth } from "../../context/AuthContext";
 import { updateStats, updateBiggestWin } from "../../utils/statsHelpers";
+import ConsciousCash from "../ConsciousCash/ConsciousCash";
 
 //CSS file
 import "./Roulette.css";
@@ -75,7 +76,7 @@ const Roulette = () => {
         <div className="roulette-game">
             <h1>Mindful Roulette</h1>
             <div className="balance-section">
-                <span className="conscious-cash"> Conscious Cash: <span> ${balance} </span> </span>
+                <ConsciousCash />
             </div>
             
             <div className="betting-section">

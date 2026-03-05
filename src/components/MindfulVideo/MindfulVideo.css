@@ -82,14 +82,13 @@ button:hover {
 }
 
 .cancel-button {
-  color: var(--text-muted);
-  border-color: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+  border-color: var(--glass-border);
 }
 
 .cancel-button:hover {
-  background: var(--glass-bg);
-  border-color: var(--glass-border);
-  color: var(--text-secondary);
+  background: var(--glass-bg-hover);
+  color: var(--text-primary);
 }
 
 .balance-section {
