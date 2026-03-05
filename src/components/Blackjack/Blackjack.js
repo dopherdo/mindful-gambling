@@ -2,6 +2,8 @@ import React, { useState, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Blackjack.css";
 import { BalanceContext } from "../../context/BalanceContext";
+import { useAuth } from "../../context/AuthContext";
+import { updateStats, updateBiggestWin } from "../../utils/statsHelpers";
 import ConsciousCash from "../ConsciousCash/ConsciousCash";
 
 // ─── Deck utilities ───────────────────────────────────────────────────────────
@@ -54,6 +56,21 @@ const CHIPS_ROW2 = [50, 100];
 const Blackjack = () => {
   const navigate = useNavigate();
   const { balance, setBalance } = useContext(BalanceContext);
+  const { currentUser } = useAuth();
+  const [deck, setDeck] = useState(generateDeck());
+  const [playerHand, setPlayerHand] = useState([]);
+  const [dealerHand, setDealerHand] = useState([]);
+  const [gameOver, setGameOver] = useState(false);
+  const [message, setMessage] = useState("");
+  const [bet, setBet] = useState(10);
+  const [gameStarted, setGameStarted] = useState(false);
+
+  // Function to start a round after betting
+  const placeBet = () => {
+    if (bet > balance) {
+      alert("Not enough Conscious Cash to place this bet.");
+      return;
+    }
 
   // phase: "betting" | "exiting" | "dealing" | "playing" | "gameover"
   const [phase, setPhase] = useState("betting");
@@ -88,6 +105,34 @@ const Blackjack = () => {
     setBusy(val);
   };
 
+  // Player Wins Instantly
+  const handleWin = () => {
+    const winnings = bet * 2;
+    setMessage(`You Win! +$${winnings}`);
+    const newBalance = balance + bet * 2;
+    setBalance(newBalance);
+    localStorage.setItem("balance", newBalance);
+    setGameOver(true);
+    if (currentUser) {
+      updateStats(currentUser.uid, "blackjack", { won: true, wagered: bet, profit: winnings });
+      updateBiggestWin(currentUser.uid, winnings);
+    }
+  };
+
+  // Player Hits
+  const hit = () => {
+    if (!gameOver) {
+      const newHand = [...playerHand, deck.pop()];
+      setPlayerHand(newHand);
+
+      const handValue = calculateHandValue(newHand);
+      if (handValue > 21) {
+        setGameOver(true);
+        setMessage("Bust! Dealer Wins!");
+        if (currentUser) updateStats(currentUser.uid, "blackjack", { won: false, wagered: bet, profit: 0 });
+      } else if (handValue === 21) {
+        handleWin(); // Auto-win if player hits 21
+        setMessage("BLACKJACK!!")
   // ── Betting ───────────────────────────────────────────────────────────────
   const addChip = amt => {
     if (bet + amt > balance) return;
@@ -227,6 +272,23 @@ const Blackjack = () => {
       return;
     }
 
+    const newBet = bet * 2;
+    const newBalance = balance - bet; // Deduct only the extra amount
+    setBalance(newBalance);
+    localStorage.setItem("balance", newBalance);
+    setBet(newBet);
+
+    const newHand = [...playerHand, deck.pop()];
+    setPlayerHand(newHand);
+
+    const handValue = calculateHandValue(newHand);
+    if (handValue > 21) {
+      setGameOver(true);
+      setMessage("Bust! Dealer Wins!");
+      if (currentUser) updateStats(currentUser.uid, "blackjack", { won: false, wagered: newBet, profit: 0 });
+    } else if (handValue === 21) {
+      handleWin(); // Auto-win if player hits 21
+      setMessage("BLACKJACK!!")
     setPhase("playing");
     setBusyBoth(false);
   };
@@ -273,6 +335,22 @@ const Blackjack = () => {
     await advanceHand();
   };
 
+    setDeck(newDeck);
+    setDealerHand([...dealerHand]);
+
+    let playerValue = calculateHandValue(playerHand);
+    if (dealerValue > 21 || playerValue > dealerValue) {
+      handleWin();
+    } else if (dealerValue === playerValue) {
+      setMessage("It's a Push!");
+      const newBalance = balance + bet;
+      setBalance(newBalance);
+      localStorage.setItem("balance", newBalance);
+      setGameOver(true);
+    } else {
+      setMessage("Dealer Wins!");
+      setGameOver(true);
+      if (currentUser) updateStats(currentUser.uid, "blackjack", { won: false, wagered: bet, profit: 0 });
   const doSplit = async () => {
     if (busyRef.current) return;
     const idx = ahiRef.current;
@@ -467,6 +545,10 @@ const Blackjack = () => {
           </div>
         </div>
       )}
+
+      <button className="back-button" onClick={() => navigate("/mindful")}>
+        Back to Home
+      </button>
     </div>
   );
 };

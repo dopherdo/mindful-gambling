@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Homepage.css";
+import { BalanceContext } from "../../context/BalanceContext";
+import { useAuth } from "../../context/AuthContext";
+
+const Homepage = () => {
+  const navigate = useNavigate();
+  const { balance, migrationPending, acceptMigration, declineMigration } = useContext(BalanceContext);
+  const { currentUser, logout } = useAuth();
 import ConsciousCash from "../ConsciousCash/ConsciousCash";
 
 const Homepage = () => {
@@ -14,21 +21,41 @@ const Homepage = () => {
 
       {/* Top Right Section */}
       <div className="top-right">
-        <button className="video-button" onClick={() => navigate("/mindful-video")}>
+        <button className="video-button" onClick={() => navigate("/mindful/video")}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{marginRight: "8px", verticalAlign: "middle"}}>
             <path d="M8 5v14l11-7z"/>
           </svg>
           Mindful Video
         </button>
+        {currentUser ? (
+          <>
+            <button className="nav-link-button" onClick={() => navigate("/leaderboard")}>Leaderboard</button>
+            <button className="nav-link-button" onClick={() => navigate("/profile")}>{currentUser.displayName || "Profile"}</button>
+            <button className="nav-link-button" onClick={() => navigate("/")}>← BJ Central</button>
+            <button className="nav-link-button signout" onClick={logout}>Sign Out</button>
+          </>
+        ) : (
+          <button className="nav-link-button signin" onClick={() => navigate("/auth")}>Sign In</button>
+        )}
+        <span className="conscious-cash">Conscious Cash: <span>${balance}</span></span>
         <ConsciousCash />
       </div>
 
+      {/* Balance migration prompt */}
+      {migrationPending && (
+        <div className="migration-banner">
+          <span>You have ${parseInt(localStorage.getItem("balance"), 10)} as a guest. Keep it on your account?</span>
+          <button onClick={acceptMigration}>Yes, keep it</button>
+          <button onClick={declineMigration}>No, use account balance</button>
+        </div>
+      )}
+
       {/* Game Options */}
       <div className="game-options">
-        <button className="blackjack-button" onClick={() => navigate("/blackjack")}>
+        <button className="blackjack-button" onClick={() => navigate("/mindful/blackjack")}>
           Blackjack
         </button>
-        <button className="roulette-button" onClick={() => navigate("/roulette")}>
+        <button className="roulette-button" onClick={() => navigate("/mindful/roulette")}>
           Roulette
         </button>
       </div>

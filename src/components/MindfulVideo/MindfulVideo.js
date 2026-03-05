@@ -2,6 +2,8 @@ import React, { useContext, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MindfulVideo.css";
 import { BalanceContext } from "../../context/BalanceContext";
+import { useAuth } from "../../context/AuthContext";
+import { incrementVideosWatched } from "../../utils/statsHelpers";
 import ConsciousCash from "../ConsciousCash/ConsciousCash";
 
 const YOUTUBE_API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
@@ -9,6 +11,7 @@ const YOUTUBE_API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
 const MindfulVideo = () => {
   const navigate = useNavigate();
   const { balance, setBalance } = useContext(BalanceContext);
+  const { currentUser } = useAuth();
   const [videoId, setVideoId] = useState(null);
   const [videoFinished, setVideoFinished] = useState(false);
 
@@ -48,9 +51,10 @@ const MindfulVideo = () => {
       const newBalance = balance + 10;
       setBalance(newBalance);
       localStorage.setItem("balance", newBalance);
-      navigate("/");
+      if (currentUser) incrementVideosWatched(currentUser.uid);
+      navigate("/mindful");
     }
-  }, [videoFinished, balance, setBalance, navigate]); // No changes to dependencies
+  }, [videoFinished, balance, setBalance, navigate, currentUser]);
 
   // Detect when the video ends
   const checkVideoCompletion = useCallback(() => {
@@ -91,7 +95,12 @@ const MindfulVideo = () => {
     const newBalance = balance + 10;
     setBalance(newBalance);
     localStorage.setItem("balance", newBalance);
-    navigate("/");
+    navigate("/mindful");
+  };
+
+  // Cancel button: Returns home without the reward
+  const handleCancel = () => {
+    navigate("/mindful");
   };
 
   return (
