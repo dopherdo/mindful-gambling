@@ -1,27 +1,33 @@
 .cc-page {
   min-height: 100dvh;
   background: var(--bg-base);
-  padding: 1.5rem 1rem;
-  max-width: 700px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
   position: relative;
-  animation: pageEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: pageEnter 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .cc-coming-soon {
   text-align: center;
-  margin-top: 6rem;
 }
 
 .cc-title {
-  font-size: clamp(1.8rem, 6vw, 3rem);
-  font-weight: 700;
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  font-weight: 900;
   color: var(--text-primary);
-  margin: 0 0 1rem;
+  letter-spacing: -0.04em;
+  margin: 0 0 0.75rem;
+  line-height: 1;
 }
 
 .cc-sub {
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   margin: 0;
 }

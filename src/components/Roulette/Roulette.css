@@ -3,26 +3,33 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
   height: 100dvh;
   overflow: hidden;
-  background: radial-gradient(ellipse at 50% 20%, #1a1a1a 0%, #0a0a0a 60%, #000000 100%);
+  background: var(--bg-base);
   color: var(--text-primary);
   font-family: 'Lato', sans-serif;
   text-align: center;
   position: relative;
-  padding: 40px 16px;
+  padding: 48px 20px 32px;
   box-sizing: border-box;
-  animation: pageEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: pageEnter 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-h1 {
-  font-size: clamp(22px, 5vw, 40px);
+.roulette-game h1 {
+  font-size: clamp(20px, 4.5vw, 36px);
   font-weight: 900;
-  letter-spacing: -0.5px;
-  margin-bottom: clamp(12px, 3vw, 24px);
-  margin-top: 0;
+  letter-spacing: -0.03em;
+  margin: 0 0 clamp(16px, 3.5vw, 28px);
   color: var(--text-primary);
+}
+
+.roulette-game h2 {
+  font-size: clamp(14px, 3vw, 18px);
+  font-weight: 700;
+  margin: 10px 0 0;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  min-height: 1.4em;
 }
 
 .balance-section {
@@ -34,135 +41,139 @@ h1 {
   gap: 8px;
 }
 
-.conscious-cash {
-  font-size: clamp(11px, 2vw, 14px);
-  font-weight: 600;
-  color: var(--text-primary);
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  padding: 6px 14px;
-  border-radius: 50px;
-  white-space: nowrap;
-}
-
-.conscious-cash span {
-  color: var(--text-primary);
-}
-
+/* ── Betting card ─────────────────────────────────────────────────────────── */
 .betting-section {
-  margin-top: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: clamp(14px, 3vw, 28px) clamp(14px, 4vw, 32px);
-  gap: 4px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: clamp(16px, 3.5vw, 28px) clamp(16px, 4vw, 28px);
+  gap: 10px;
   width: min(360px, 94vw);
   box-sizing: border-box;
 }
 
 .bet-row {
-  padding: 4px 0;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 8px;
+  gap: 7px;
+  width: 100%;
 }
 
 .bet-input {
   width: 100%;
-  max-width: 140px;
-  padding: 10px 12px;
-  font-size: clamp(14px, 3vw, 16px);
+  max-width: 130px;
+  padding: 9px 12px;
+  font-size: clamp(14px, 3vw, 15px);
   font-family: 'Lato', sans-serif;
-  border-radius: 12px;
-  border: 1px solid var(--glass-border);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  border-radius: 8px;
+  border: 1px solid var(--border-default);
   text-align: center;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-elevated);
   color: var(--text-primary);
-  margin-bottom: 4px;
   outline: none;
   box-sizing: border-box;
+  transition: border-color 0.2s;
 }
 
 .bet-input:focus {
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-.spin-button {
-  background: var(--text-primary);
-  color: #000;
-  padding: 10px 36px;
-  font-size: clamp(13px, 2.5vw, 16px);
-  font-weight: 900;
-  font-family: 'Lato', sans-serif;
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  margin-top: 8px;
-  letter-spacing: 0.03em;
-  transition: opacity 0.2s ease;
-  width: 100%;
-}
-
-.spin-button:hover {
-  opacity: 0.85;
-}
-
-.wheel-result {
-  font-size: clamp(14px, 3vw, 20px);
-  margin-top: clamp(12px, 3vw, 24px);
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  padding: 12px 24px;
-  border-radius: 16px;
-  width: min(280px, 90vw);
-  box-sizing: border-box;
-}
-
-button {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  color: var(--text-primary);
-  border: 1px solid var(--glass-border);
-  padding: 7px clamp(12px, 3vw, 20px);
-  font-size: clamp(12px, 2.5vw, 15px);
-  font-weight: 600;
-  font-family: 'Lato', sans-serif;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-button:hover {
-  background: var(--glass-bg-hover);
-}
-
-.back-button {
-  margin-top: 12px;
-  color: var(--text-muted);
-  border-color: rgba(255, 255, 255, 0.06);
-  font-size: clamp(11px, 2vw, 14px);
-}
-
-.back-button:hover {
-  background: var(--glass-bg);
-  border-color: var(--glass-border);
-  color: var(--text-secondary);
+  border-color: var(--border-bright);
 }
 
 .bet-number {
-  display: flex;
-  min-width: 0;
   width: 80px;
   flex-shrink: 0;
+  padding: 9px 10px;
+  font-size: clamp(13px, 2.5vw, 14px);
+  font-family: 'Lato', sans-serif;
+  border-radius: 8px;
+  border: 1px solid var(--border-default);
+  text-align: center;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.bet-number:focus {
+  border-color: var(--border-bright);
+}
+
+/* Generic bet buttons */
+.roulette-game .betting-section button {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+  padding: 7px clamp(10px, 2.5vw, 16px);
+  font-size: clamp(11px, 2.5vw, 13px);
+  font-weight: 700;
+  font-family: 'Lato', sans-serif;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.roulette-game .betting-section button:hover {
+  background: var(--bg-active);
+  border-color: var(--border-bright);
+}
+
+/* ── Spin button ──────────────────────────────────────────────────────────── */
+.spin-button {
+  background: var(--accent);
+  color: #ffffff;
+  padding: 11px 0;
+  font-size: clamp(13px, 2.5vw, 15px);
+  font-weight: 900;
+  font-family: 'Lato', sans-serif;
+  letter-spacing: 0.05em;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: opacity 0.2s;
+  width: min(360px, 94vw);
+  box-sizing: border-box;
+}
+
+.spin-button:hover {
+  opacity: 0.88;
+}
+
+/* ── Result display ───────────────────────────────────────────────────────── */
+.wheel-result {
+  font-size: clamp(12px, 2.5vw, 15px);
+  font-weight: 600;
+  margin-top: 12px;
+  color: var(--text-secondary);
+  letter-spacing: 0.01em;
+  min-height: 1.4em;
+}
+
+/* ── Back button ──────────────────────────────────────────────────────────── */
+.back-button {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Lato', sans-serif;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  padding: 6px 10px;
+  margin-top: 4px;
+  transition: color 0.2s;
+}
+
+.back-button:hover {
+  background: none;
+  border: none;
+  color: var(--text-primary);
 }

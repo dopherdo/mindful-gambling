@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Homepage.css";
 import { useAuth } from "../../context/AuthContext";
@@ -7,39 +7,63 @@ import BJCentralBack from "../BJCentralBack/BJCentralBack";
 
 const Homepage = () => {
   const navigate = useNavigate();
-const { currentUser, logout } = useAuth();
+  const { currentUser, logout } = useAuth();
   const [showModal, setShowModal] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handler = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [menuOpen]);
 
   return (
     <div className="homepage">
+      {/* Top bar — constrained to content width */}
+      <div className="page-topbar">
+        <BJCentralBack />
+        <div className="topbar-right">
+          <button className="video-button" onClick={() => navigate("/mindful/video")}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style={{ marginRight: "6px" }}>
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            Mindful Video
+          </button>
+          <ConsciousCash />
+          <div className="hamburger-wrap" ref={menuRef}>
+            <button
+              className="hamburger-btn"
+              onClick={() => setMenuOpen((o) => !o)}
+              aria-label="Menu"
+            >
+              <span /><span /><span />
+            </button>
+            {menuOpen && (
+              <div className="hamburger-menu">
+                {currentUser ? (
+                  <>
+                    <button onClick={() => { navigate("/profile"); setMenuOpen(false); }}>Profile</button>
+                    <button onClick={() => { navigate("/leaderboard"); setMenuOpen(false); }}>Leaderboard</button>
+                    <div className="menu-divider" />
+                    <button className="menu-signout" onClick={() => { logout(); setMenuOpen(false); }}>Sign Out</button>
+                  </>
+                ) : (
+                  <button onClick={() => { navigate("/auth"); setMenuOpen(false); }}>Sign In</button>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
       <h2 className="info-text">Make every bet a mindful one.</h2>
       <h1 className="home-title">Mindful Gambling</h1>
-
-      <BJCentralBack />
-
-      {/* Top Right Section */}
-      <div className="top-right">
-        <button className="video-button" onClick={() => navigate("/mindful/video")}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{marginRight: "8px", verticalAlign: "middle"}}>
-            <path d="M8 5v14l11-7z"/>
-          </svg>
-          Mindful Video
-        </button>
-        {currentUser ? (
-          <>
-            <button className="nav-link-button" onClick={() => navigate("/leaderboard")}>Leaderboard</button>
-            <button className="profile-icon-btn" onClick={() => navigate("/profile")} title={currentUser.displayName || "Profile"}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-              </svg>
-            </button>
-            <button className="nav-link-button signout" onClick={logout}>Sign Out</button>
-          </>
-        ) : (
-          <button className="nav-link-button signin" onClick={() => navigate("/auth")}>Sign In</button>
-        )}
-        <ConsciousCash />
-      </div>
 
       {/* Game Options */}
       <div className="game-options">

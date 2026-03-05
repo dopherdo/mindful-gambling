@@ -1,71 +1,93 @@
 .leaderboard-page {
   min-height: 100dvh;
   background: var(--bg-base);
-  padding: 2rem 1rem;
-  max-width: 700px;
+  padding: 2.5rem 1.5rem;
+  max-width: 680px;
   margin: 0 auto;
-  animation: pageEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: pageEnter 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .leaderboard-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  gap: 1.25rem;
+  margin-bottom: 2.25rem;
 }
 
 .leaderboard-title {
-  font-size: clamp(1.5rem, 4vw, 2rem);
-  font-weight: 700;
+  font-size: clamp(1.3rem, 4vw, 1.75rem);
+  font-weight: 900;
   color: var(--text-primary);
+  letter-spacing: -0.03em;
   margin: 0;
 }
 
 .leaderboard-loading {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-secondary);
   text-align: center;
-  margin-top: 3rem;
+  margin-top: 4rem;
+  font-size: 0.9rem;
 }
 
+/* ── Table ────────────────────────────────────────────────────────────────── */
 .leaderboard-table {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 4px;
 }
 
 .leaderboard-row {
   display: grid;
-  grid-template-columns: 60px 1fr 100px 70px 70px;
+  grid-template-columns: 52px 1fr 90px 64px 64px;
   align-items: center;
-  padding: 0.75rem 1rem;
-  border-radius: 12px;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-dim);
   color: var(--text-primary);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
+  font-family: 'Lato', sans-serif;
+  transition: border-color 0.15s;
+}
+
+.leaderboard-row:hover {
+  border-color: var(--border-subtle);
 }
 
 .leaderboard-head {
-  background: rgba(255, 255, 255, 0.03);
-  color: rgba(255, 255, 255, 0.45);
-  font-size: 0.78rem;
-  font-weight: 600;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
+  padding-left: 1rem;
+  margin-bottom: 4px;
+}
+
+.leaderboard-head:hover {
+  border: none;
 }
 
 .leaderboard-row.current-user {
-  border-color: rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-default);
+  background: var(--bg-elevated);
 }
 
 .col-rank {
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
 }
 
+/* Tinted top-3 ranks */
+.leaderboard-table .leaderboard-row:nth-child(2) .col-rank { color: #C4995A; }
+.leaderboard-table .leaderboard-row:nth-child(3) .col-rank { color: #A8A8A8; }
+.leaderboard-table .leaderboard-row:nth-child(4) .col-rank { color: #8C6A4A; }
+
 .col-name {
-  font-weight: 500;
+  font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -75,21 +97,29 @@
 .col-wins,
 .col-videos {
   text-align: right;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.82rem;
 }
 
+/* ── Back button ──────────────────────────────────────────────────────────── */
 .back-button {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 10px;
-  padding: 0.5rem 1rem;
-  color: var(--text-primary);
-  font-size: 0.85rem;
+  background: transparent;
+  border: 1px solid var(--border-default);
+  border-radius: 50px;
+  padding: 0.45rem 1rem;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: 'Lato', sans-serif;
+  letter-spacing: 0.02em;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: border-color 0.2s, color 0.2s;
   white-space: nowrap;
 }
 
 .back-button:hover {
-  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--border-bright);
+  color: var(--text-primary);
+  background: transparent;
 }

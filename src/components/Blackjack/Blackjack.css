@@ -4,10 +4,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
   height: 100dvh;
   overflow: hidden;
-  background: radial-gradient(ellipse at 50% 20%, #1a1a1a 0%, #0a0a0a 60%, #000000 100%);
+  background: var(--bg-base);
   color: var(--text-primary);
   font-family: 'Lato', sans-serif;
   text-align: center;
@@ -16,29 +15,30 @@
   box-sizing: border-box;
 }
 
-/* ── Title (animates from center-above to top) ───────────────────────────── */
+/* ── Title ───────────────────────────────────────────────────────────────── */
 .bj-title {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  top: calc(50% - 180px);
-  font-size: clamp(22px, 5vw, 40px);
+  top: calc(50% - 190px);
+  font-size: clamp(20px, 4.5vw, 36px);
   font-weight: 900;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.03em;
   white-space: nowrap;
   margin: 0;
   color: var(--text-primary);
-  transition: top 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-              font-size 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: top 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+              font-size 0.65s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
   z-index: 1;
 }
 
-/* Sits between the balance chip (~42px bottom) and the cards (~96px top),
-   with ~11px equal padding above and below */
 .bj-title-top {
-  top: 53px;
-  font-size: clamp(18px, 4vw, 32px);
+  top: 18px;
+  font-size: clamp(13px, 2.5vw, 18px);
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+  font-weight: 700;
 }
 
 /* ── Balance chip ────────────────────────────────────────────────────────── */
@@ -51,31 +51,13 @@
   gap: 8px;
 }
 
-.conscious-cash {
-  font-size: clamp(11px, 2vw, 14px);
-  font-weight: 600;
-  color: var(--text-primary);
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  padding: 6px 14px;
-  border-radius: 50px;
-  white-space: nowrap;
-}
-
-.conscious-cash span {
-  color: var(--text-primary);
-}
-
 /* ── Betting layout ──────────────────────────────────────────────────────── */
 .betting-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  width: min(360px, 92vw);
-  margin-top: 40px;
+  gap: 10px;
+  width: min(340px, 92vw);
   animation: pageEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -84,92 +66,85 @@
   flex-direction: column;
   align-items: center;
   gap: 14px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: clamp(20px, 5vw, 36px) clamp(20px, 6vw, 40px);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: clamp(20px, 5vw, 32px) clamp(20px, 6vw, 36px);
   width: 100%;
   box-sizing: border-box;
 }
 
 @keyframes bjExit {
-  to { opacity: 0; transform: translateY(20px); }
+  to { opacity: 0; transform: translateY(16px); }
 }
 
 .bj-exit {
-  animation: bjExit 0.35s cubic-bezier(0.4, 0, 1, 1) both;
+  animation: bjExit 0.3s cubic-bezier(0.4, 0, 1, 1) both;
 }
 
 .bet-display {
-  font-size: clamp(32px, 7vw, 48px);
+  font-size: clamp(36px, 8vw, 52px);
   font-weight: 900;
-  letter-spacing: -1px;
+  letter-spacing: -0.03em;
   color: var(--text-primary);
   line-height: 1;
   min-height: 1.2em;
+  font-variant-numeric: tabular-nums;
 }
 
 .chip-row {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .chip-btn {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
   color: var(--text-primary);
-  border: 1px solid var(--glass-border);
-  padding: 8px 14px;
-  font-size: clamp(12px, 2.5vw, 14px);
+  padding: 7px 13px;
+  font-size: clamp(11px, 2.5vw, 13px);
   font-weight: 700;
   font-family: 'Lato', sans-serif;
-  border-radius: 50px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s ease;
-  min-width: 52px;
+  transition: background 0.15s, border-color 0.15s;
+  min-width: 48px;
 }
 
 .chip-btn:hover:not(:disabled) {
-  background: var(--glass-bg-hover);
+  background: var(--bg-active);
+  border-color: var(--border-bright);
 }
 
 .chip-btn:disabled {
-  opacity: 0.3;
+  opacity: 0.22;
   cursor: not-allowed;
 }
 
-.chip-clear {
-  color: var(--text-primary);
-}
-
 .deal-btn {
-  background: var(--text-primary);
-  color: #000;
+  background: var(--accent);
+  color: #ffffff;
   border: none;
   padding: 11px 0;
   width: 100%;
   box-sizing: border-box;
-  font-size: clamp(13px, 2.5vw, 16px);
+  font-size: clamp(13px, 2.5vw, 15px);
   font-weight: 900;
   font-family: 'Lato', sans-serif;
-  border-radius: 50px;
+  letter-spacing: 0.05em;
+  border-radius: 8px;
   cursor: pointer;
-  letter-spacing: 0.04em;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s;
 }
 
 .deal-btn:hover:not(:disabled) {
-  background: #e8e8e8;
-  filter: brightness(1.08);
+  opacity: 0.88;
 }
 
 .deal-btn:disabled {
-  opacity: 0.3;
+  opacity: 0.25;
   cursor: not-allowed;
 }
 
@@ -177,12 +152,13 @@
   background: none;
   border: none;
   color: var(--text-secondary);
-  font-size: clamp(11px, 2vw, 13px);
+  font-size: clamp(11px, 2vw, 12px);
   font-family: 'Lato', sans-serif;
   font-weight: 600;
+  letter-spacing: 0.03em;
   cursor: pointer;
   padding: 4px 8px;
-  transition: color 0.2s ease;
+  transition: color 0.2s;
 }
 
 .bj-back:hover {
@@ -193,7 +169,6 @@
 /* ── Game area ───────────────────────────────────────────────────────────── */
 .bj-ingame {
   justify-content: flex-start;
-  /* No padding-top — game-area fills full height so divider lands at 50dvh */
 }
 
 .game-area {
@@ -201,12 +176,11 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 640px;
+  max-width: 600px;
   overflow: hidden;
   animation: pageEnter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Each zone = exactly half the viewport → divider at 50dvh */
 .dealer-zone {
   height: 50dvh;
   flex: none;
@@ -214,9 +188,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  padding-top: 96px;   /* clear title + balance chip */
-  padding-bottom: clamp(16px, 3vw, 28px);
-  border-bottom: 1px solid var(--glass-border);
+  padding-top: 88px;
+  padding-bottom: clamp(14px, 3vw, 24px);
+  border-bottom: 1px solid var(--border-dim);
   box-sizing: border-box;
 }
 
@@ -227,8 +201,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: clamp(16px, 3vw, 28px);
-  gap: clamp(12px, 2.5vw, 20px);
+  padding-top: clamp(14px, 3vw, 24px);
+  gap: clamp(10px, 2.5vw, 18px);
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -239,18 +213,18 @@
   align-items: center;
   gap: 6px;
   border: 1px solid transparent;
-  border-radius: 12px;
+  border-radius: 10px;
   padding: 8px 12px;
-  transition: border-color 0.4s ease, background 0.4s ease;
+  transition: border-color 0.35s ease, background 0.35s ease;
 }
 
 .hand-label {
-  font-size: clamp(10px, 2vw, 13px);
+  font-size: clamp(10px, 2vw, 12px);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--text-secondary);
-  transition: color 0.4s ease;
+  transition: color 0.35s ease;
 }
 
 .active-hand .hand-label {
@@ -258,23 +232,14 @@
 }
 
 /* Result states */
-.hand-win {
-  border-color: rgba(74, 222, 128, 0.4);
-  background: rgba(74, 222, 128, 0.07);
-}
-.hand-win .hand-label { color: #4ade80; }
+.hand-win  { border-color: rgba(74, 138, 92, 0.35); background: rgba(74, 138, 92, 0.07); }
+.hand-win .hand-label { color: #5DBF7E; }
 
-.hand-loss {
-  border-color: rgba(248, 113, 113, 0.35);
-  background: rgba(248, 113, 113, 0.07);
-}
-.hand-loss .hand-label { color: #f87171; }
+.hand-loss { border-color: rgba(138, 68, 68, 0.35); background: rgba(138, 68, 68, 0.07); }
+.hand-loss .hand-label { color: #BF6B6B; }
 
-.hand-push {
-  border-color: rgba(250, 204, 21, 0.3);
-  background: rgba(250, 204, 21, 0.05);
-}
-.hand-push .hand-label { color: #facc15; }
+.hand-push { border-color: rgba(138, 122, 68, 0.3); background: rgba(138, 122, 68, 0.06); }
+.hand-push .hand-label { color: #C4A855; }
 
 .cards-row {
   display: flex;
@@ -285,46 +250,48 @@
 }
 
 .hand-bet {
-  font-size: clamp(10px, 1.8vw, 12px);
+  font-size: clamp(10px, 1.8vw, 11px);
   color: var(--text-secondary);
   font-weight: 600;
+  letter-spacing: 0.03em;
+  font-variant-numeric: tabular-nums;
 }
 
 .player-hands {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
   justify-content: center;
 }
 
 /* ── Playing cards ───────────────────────────────────────────────────────── */
 @keyframes cardDeal {
-  from { opacity: 0; transform: translateX(72px) rotate(10deg) scale(0.85); }
+  from { opacity: 0; transform: translateX(64px) rotate(8deg) scale(0.88); }
   to   { opacity: 1; transform: translateX(0) rotate(0deg) scale(1); }
 }
 
 .bjc {
-  width: clamp(48px, 9.5vw, 64px);
-  height: clamp(67px, 13.3vw, 90px);
-  background: #ffffff;
+  width: clamp(46px, 9vw, 62px);
+  height: clamp(64px, 12.6vw, 87px);
+  background: #F8F5F0;
   border-radius: 7px;
-  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 4px 5px;
   box-sizing: border-box;
-  animation: cardDeal 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: cardDeal 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
   flex-shrink: 0;
   user-select: none;
   position: relative;
 }
 
-.bjc-red  { color: #cc1111; }
-.bjc-black { color: #111111; }
+.bjc-red   { color: #C41A1A; }
+.bjc-black { color: #1A1A1A; }
 
 .bjc-corner {
-  font-size: clamp(9px, 2vw, 12px);
+  font-size: clamp(9px, 1.9vw, 12px);
   font-weight: 900;
   line-height: 1.1;
   font-family: 'Lato', sans-serif;
@@ -338,28 +305,28 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: clamp(16px, 3.5vw, 24px);
+  font-size: clamp(15px, 3.5vw, 22px);
   line-height: 1;
 }
 
 .bjc-back {
-  background: #1c1c2e;
+  background: var(--bg-elevated);
   background-image:
     repeating-linear-gradient(
       45deg,
-      rgba(255, 255, 255, 0.04) 0,
-      rgba(255, 255, 255, 0.04) 1px,
+      rgba(255, 248, 235, 0.03) 0,
+      rgba(255, 248, 235, 0.03) 1px,
       transparent 1px,
-      transparent 8px
+      transparent 9px
     ),
     repeating-linear-gradient(
       -45deg,
-      rgba(255, 255, 255, 0.04) 0,
-      rgba(255, 255, 255, 0.04) 1px,
+      rgba(255, 248, 235, 0.03) 0,
+      rgba(255, 248, 235, 0.03) 1px,
       transparent 1px,
-      transparent 8px
+      transparent 9px
     );
-  border: 2px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--border-default);
 }
 
 /* ── Action buttons ──────────────────────────────────────────────────────── */
@@ -367,30 +334,30 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .action-btns button {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
   color: var(--text-primary);
-  border: 1px solid var(--glass-border);
-  padding: 9px clamp(14px, 3.5vw, 24px);
-  font-size: clamp(13px, 2.5vw, 15px);
+  padding: 9px clamp(14px, 3vw, 22px);
+  font-size: clamp(12px, 2.5vw, 14px);
   font-weight: 700;
   font-family: 'Lato', sans-serif;
-  border-radius: 50px;
+  letter-spacing: 0.02em;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s ease, opacity 0.2s ease;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 .action-btns button:hover:not(:disabled) {
-  background: var(--glass-bg-hover);
+  background: var(--bg-active);
+  border-color: var(--border-bright);
 }
 
 .action-btns button:disabled {
-  opacity: 0.25;
+  opacity: 0.2;
   cursor: not-allowed;
 }
 
@@ -399,7 +366,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   width: min(260px, 90vw);
 }
 
@@ -416,39 +383,37 @@
 }
 
 .rebet-spacer {
-  width: 44px;
+  width: 40px;
   flex-shrink: 0;
 }
 
 .rebet-btn {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
   color: var(--text-primary);
-  border: 1px solid var(--glass-border);
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  font-size: 20px;
+  font-size: 18px;
   font-family: 'Lato', sans-serif;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: background 0.2s ease;
+  transition: background 0.15s, border-color 0.15s;
   line-height: 1;
 }
 
 .rebet-btn:hover {
-  background: var(--glass-bg-hover);
+  background: var(--bg-active);
+  border-color: var(--border-bright);
 }
 
 .gameover-back {
-  margin-top: clamp(12px, 3vw, 20px);
+  margin-top: clamp(8px, 2.5vw, 14px);
 }
 
-/* Extra separation between deal/play-again and back to home in betting wrapper */
 .betting-wrapper .bj-back {
-  margin-top: clamp(10px, 2.5vw, 16px);
+  margin-top: clamp(6px, 2vw, 10px);
 }
