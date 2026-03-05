@@ -1,3 +1,4 @@
+/* ── Base layout ─────────────────────────────────────────────────────────── */
 .blackjack-game {
   display: flex;
   flex-direction: column;
@@ -11,20 +12,36 @@
   font-family: 'Lato', sans-serif;
   text-align: center;
   position: relative;
-  padding: 40px 20px;
+  padding: 0 16px;
   box-sizing: border-box;
-  animation: pageEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-h1 {
+/* ── Title (animates from center-above to top) ───────────────────────────── */
+.bj-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: calc(50% - 180px);
   font-size: clamp(22px, 5vw, 40px);
   font-weight: 900;
   letter-spacing: -0.5px;
-  margin-bottom: clamp(12px, 3vw, 24px);
-  margin-top: 0;
+  white-space: nowrap;
+  margin: 0;
   color: var(--text-primary);
+  transition: top 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              font-size 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  z-index: 1;
 }
 
+/* Sits between the balance chip (~42px bottom) and the cards (~96px top),
+   with ~11px equal padding above and below */
+.bj-title-top {
+  top: 53px;
+  font-size: clamp(18px, 4vw, 32px);
+}
+
+/* ── Balance chip ────────────────────────────────────────────────────────── */
 .balance-section {
   position: absolute;
   top: 16px;
@@ -51,139 +68,288 @@ h1 {
   color: var(--text-primary);
 }
 
-.betting-section {
-  margin-top: 8px;
+/* ── Betting layout ──────────────────────────────────────────────────────── */
+.betting-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
+  width: min(360px, 92vw);
+  margin-top: 40px;
+  animation: pageEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.betting-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
   background: var(--glass-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   border-radius: 20px;
-  padding: clamp(16px, 4vw, 28px) clamp(20px, 6vw, 40px);
-  width: min(320px, 90vw);
-  box-sizing: border-box;
-}
-
-.bet-input {
+  padding: clamp(20px, 5vw, 36px) clamp(20px, 6vw, 40px);
   width: 100%;
-  max-width: 140px;
-  padding: 10px 12px;
-  font-size: clamp(15px, 3vw, 18px);
-  font-family: 'Lato', sans-serif;
-  border-radius: 12px;
-  border: 1px solid var(--glass-border);
-  text-align: center;
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-primary);
-  outline: none;
   box-sizing: border-box;
 }
 
-.bet-input:focus {
-  border-color: rgba(255, 255, 255, 0.3);
+@keyframes bjExit {
+  to { opacity: 0; transform: translateY(20px); }
 }
 
-.bet-button {
-  background: var(--text-primary);
-  color: #000;
-  padding: 10px 36px;
-  font-size: clamp(13px, 2.5vw, 16px);
+.bj-exit {
+  animation: bjExit 0.35s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+.bet-display {
+  font-size: clamp(32px, 7vw, 48px);
   font-weight: 900;
-  font-family: 'Lato', sans-serif;
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-  letter-spacing: 0.03em;
-  width: 100%;
+  letter-spacing: -1px;
+  color: var(--text-primary);
+  line-height: 1;
+  min-height: 1.2em;
 }
 
-.bet-button:hover {
-  opacity: 0.85;
-}
-
-.hand {
-  margin-top: clamp(12px, 3vw, 24px);
-}
-
-.hand h2 {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--text-secondary);
-  margin-bottom: 8px;
-  margin-top: 0;
-}
-
-.cards {
+.chip-row {
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 8px;
-  font-size: clamp(16px, 4vw, 22px);
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  padding: 12px 20px;
-  border-radius: 16px;
-  max-width: 90vw;
 }
 
-.buttons {
-  margin-top: clamp(12px, 3vw, 24px);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-}
-
-button {
+.chip-btn {
   background: var(--glass-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   color: var(--text-primary);
   border: 1px solid var(--glass-border);
-  padding: 8px clamp(16px, 4vw, 28px);
-  font-size: clamp(13px, 2.5vw, 16px);
-  font-weight: 600;
+  padding: 8px 14px;
+  font-size: clamp(12px, 2.5vw, 14px);
+  font-weight: 700;
   font-family: 'Lato', sans-serif;
   border-radius: 50px;
   cursor: pointer;
   transition: background 0.2s ease;
+  min-width: 52px;
 }
 
-button:hover {
+.chip-btn:hover:not(:disabled) {
   background: var(--glass-bg-hover);
 }
 
-.play-again-button {
-  margin-top: clamp(12px, 3vw, 24px);
+.chip-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.chip-clear {
+  color: var(--text-secondary);
+}
+
+.deal-btn {
   background: var(--text-primary);
   color: #000;
   border: none;
+  padding: 11px 0;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: clamp(13px, 2.5vw, 16px);
   font-weight: 900;
+  font-family: 'Lato', sans-serif;
   border-radius: 50px;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: opacity 0.2s ease;
 }
 
-.play-again-button:hover {
+.deal-btn:hover:not(:disabled) {
   opacity: 0.85;
-  background: var(--text-primary);
 }
 
-.back-button {
-  margin-top: 12px;
+.deal-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.bj-back {
+  background: none;
+  border: none;
   color: var(--text-muted);
-  border-color: rgba(255, 255, 255, 0.06);
-  font-size: clamp(11px, 2vw, 14px);
+  font-size: clamp(11px, 2vw, 13px);
+  font-family: 'Lato', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.2s ease;
 }
 
-.back-button:hover {
-  background: var(--glass-bg);
-  border-color: var(--glass-border);
+.bj-back:hover {
   color: var(--text-secondary);
+  background: none;
+}
+
+/* ── Game area ───────────────────────────────────────────────────────────── */
+.bj-ingame {
+  justify-content: flex-start;
+  padding-top: 96px;
+}
+
+.game-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(12px, 3vw, 20px);
+  width: 100%;
+  max-width: 640px;
+  animation: pageEnter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hand-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.hand-label {
+  font-size: clamp(10px, 2vw, 13px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+}
+
+.active-hand .hand-label {
+  color: var(--text-primary);
+}
+
+.cards-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.hand-bet {
+  font-size: clamp(10px, 1.8vw, 12px);
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.player-hands {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  margin-top: clamp(18px, 4vw, 32px);
+  padding-top: clamp(18px, 4vw, 32px);
+  border-top: 1px solid var(--glass-border);
+}
+
+/* ── Playing cards ───────────────────────────────────────────────────────── */
+@keyframes cardDeal {
+  from { opacity: 0; transform: translateX(72px) rotate(10deg) scale(0.85); }
+  to   { opacity: 1; transform: translateX(0) rotate(0deg) scale(1); }
+}
+
+.bjc {
+  width: clamp(48px, 9.5vw, 64px);
+  height: clamp(67px, 13.3vw, 90px);
+  background: #ffffff;
+  border-radius: 7px;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4px 5px;
+  box-sizing: border-box;
+  animation: cardDeal 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  flex-shrink: 0;
+  user-select: none;
+  position: relative;
+}
+
+.bjc-red  { color: #cc1111; }
+.bjc-black { color: #111111; }
+
+.bjc-corner {
+  font-size: clamp(9px, 2vw, 12px);
+  font-weight: 900;
+  line-height: 1.1;
+  font-family: 'Lato', sans-serif;
+}
+
+.bjc-tl { text-align: left; }
+.bjc-br { text-align: right; transform: rotate(180deg); }
+
+.bjc-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(16px, 3.5vw, 24px);
+  line-height: 1;
+}
+
+.bjc-back {
+  background: #1c1c2e;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.04) 0,
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 1px,
+      transparent 8px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.04) 0,
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 1px,
+      transparent 8px
+    );
+  border: 2px solid rgba(255, 255, 255, 0.12);
+}
+
+/* ── Action buttons ──────────────────────────────────────────────────────── */
+.action-btns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.action-btns button {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+  padding: 9px clamp(14px, 3.5vw, 24px);
+  font-size: clamp(13px, 2.5vw, 15px);
+  font-weight: 700;
+  font-family: 'Lato', sans-serif;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.action-btns button:hover:not(:disabled) {
+  background: var(--glass-bg-hover);
+}
+
+.action-btns button:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+/* ── Gameover actions ────────────────────────────────────────────────────── */
+.gameover-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(260px, 90vw);
 }

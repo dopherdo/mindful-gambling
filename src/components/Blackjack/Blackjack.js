@@ -1,236 +1,438 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Blackjack.css";
-import { BalanceContext } from "../../context/BalanceContext"; // Use Global Balance Context
+import { BalanceContext } from "../../context/BalanceContext";
 
-const generateDeck = () => {
+// ─── Deck utilities ───────────────────────────────────────────────────────────
+let _cardId = 0;
+const uid = () => ++_cardId;
+
+const buildDeck = () => {
   const suits = ["♠", "♥", "♦", "♣"];
-  const values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
-  let deck = [];
-  for (let suit of suits) {
-    for (let value of values) {
-      deck.push({ suit, value });
-    }
+  const ranks = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+  const deck = [];
+  for (const suit of suits)
+    for (const rank of ranks)
+      deck.push({ id: uid(), suit, rank });
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
   }
-  return deck.sort(() => Math.random() - 0.5);
+  return deck;
 };
 
-const calculateHandValue = (hand) => {
-  let value = 0;
-  let aces = 0;
+const rankVal = r => r === "A" ? 11 : ["J","Q","K"].includes(r) ? 10 : +r;
 
-  hand.forEach((card) => {
-    if (["J", "Q", "K"].includes(card.value)) {
-      value += 10;
-    } else if (card.value === "A") {
-      aces += 1;
-      value += 11;
-    } else {
-      value += parseInt(card.value);
-    }
-  });
-
-  while (value > 21 && aces > 0) {
-    value -= 10;
-    aces -= 1;
-  }
-
-  return value;
+const total = hand => {
+  let t = 0, aces = 0;
+  for (const c of hand) { t += rankVal(c.rank); if (c.rank === "A") aces++; }
+  while (t > 21 && aces-- > 0) t -= 10;
+  return t;
 };
 
+const isBlackjack = hand => hand.length === 2 && total(hand) === 21;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// ─── Card component ───────────────────────────────────────────────────────────
+const Card = ({ card }) => {
+  if (card.faceDown) return <div className="bjc bjc-back" />;
+  const red = card.suit === "♥" || card.suit === "♦";
+  return (
+    <div className={`bjc ${red ? "bjc-red" : "bjc-black"}`}>
+      <div className="bjc-corner bjc-tl">{card.rank}<br />{card.suit}</div>
+      <div className="bjc-center">{card.suit}</div>
+      <div className="bjc-corner bjc-br">{card.rank}<br />{card.suit}</div>
+    </div>
+  );
+};
+
+const CHIPS = [5, 10, 25, 50, 100];
+
+// ─── Component ────────────────────────────────────────────────────────────────
 const Blackjack = () => {
   const navigate = useNavigate();
   const { balance, setBalance } = useContext(BalanceContext);
-  const [deck, setDeck] = useState(generateDeck());
-  const [playerHand, setPlayerHand] = useState([]);
-  const [dealerHand, setDealerHand] = useState([]);
-  const [gameOver, setGameOver] = useState(false);
-  const [message, setMessage] = useState("");
-  const [bet, setBet] = useState(10);
-  const [gameStarted, setGameStarted] = useState(false);
 
-  // Function to start a round after betting
-  const placeBet = () => {
-    if (bet > balance) {
-      alert("Not enough Conscious Cash to place this bet.");
-      return;
-    }
+  // phase: "betting" | "exiting" | "dealing" | "playing" | "gameover"
+  const [phase, setPhase] = useState("betting");
+  const [bet, setBet] = useState(0);
+  const [busy, setBusy] = useState(false);
+  const [dealerCards, setDealerCards] = useState([]);
+  const [playerHands, setPlayerHands] = useState([]);
+  const [activeHandIdx, setActiveHandIdx] = useState(0);
+  const [handBets, setHandBets] = useState([]);
+  const [results, setResults] = useState([]);
+  const [showDealerTotal, setShowDealerTotal] = useState(false);
 
-    const newBalance = balance - bet;
-    setBalance(newBalance);
-    localStorage.setItem("balance", newBalance);
+  // Refs for stale-closure-free async access
+  const deckRef = useRef([]);
+  const dcRef = useRef([]);
+  const phRef = useRef([]);
+  const ahiRef = useRef(0);
+  const hbRef = useRef([]);
+  const balRef = useRef(balance);
+  const busyRef = useRef(false);
+  balRef.current = balance;
 
-    // Initialize the deck & hands
-    const newDeck = generateDeck();
-    const newPlayerHand = [newDeck.pop(), newDeck.pop()];
-    const newDealerHand = [newDeck.pop(), newDeck.pop()];
-
-    setDeck(newDeck);
-    setPlayerHand(newPlayerHand);
-    setDealerHand(newDealerHand);
-    setGameOver(false);
-    setMessage("");
-    setGameStarted(true);
-
-    // **Auto-win if player starts with 21**
-    if (calculateHandValue(newPlayerHand) === 21) {
-      handleWin();
-    }
+  const syncBalance = val => {
+    balRef.current = val;
+    setBalance(val);
+    localStorage.setItem("balance", val);
   };
 
-  // Player Wins Instantly
-  const handleWin = () => {
-    const winnings = bet * 2;
-    setMessage(`You Win! +$${winnings}`);
-    const newBalance = balance + bet * 2;
-    setBalance(newBalance);
-    localStorage.setItem("balance", newBalance);
-    setGameOver(true);
+  const setBusyBoth = val => {
+    busyRef.current = val;
+    setBusy(val);
   };
 
-  // Player Hits
-  const hit = () => {
-    if (!gameOver) {
-      const newHand = [...playerHand, deck.pop()];
-      setPlayerHand(newHand);
+  // ── Betting ───────────────────────────────────────────────────────────────
+  const addChip = amt => {
+    if (bet + amt > balance) return;
+    setBet(b => b + amt);
+  };
 
-      const handValue = calculateHandValue(newHand);
-      if (handValue > 21) {
-        setGameOver(true);
-        setMessage("Bust! Dealer Wins!");
-      } else if (handValue === 21) {
-        handleWin(); // Auto-win if player hits 21
-        setMessage("BLACKJACK!!")
+  // ── Dealer turn ───────────────────────────────────────────────────────────
+  const runDealer = async () => {
+    const revealed = dcRef.current.map(c => ({ ...c, faceDown: false }));
+    dcRef.current = revealed;
+    setDealerCards([...revealed]);
+    setShowDealerTotal(true);
+    await sleep(500);
+
+    const allBust = phRef.current.every(h => total(h) > 21);
+    if (!allBust) {
+      while (total(dcRef.current) < 17) {
+        await sleep(420);
+        const card = deckRef.current.pop();
+        dcRef.current = [...dcRef.current, card];
+        setDealerCards([...dcRef.current]);
       }
     }
+
+    const dTotal = total(dcRef.current);
+    const dBust = dTotal > 21;
+    let payout = 0;
+    const res = phRef.current.map((hand, i) => {
+      const pt = total(hand);
+      const hb = hbRef.current[i];
+      if (pt > 21) return "Bust";
+      if (dBust || pt > dTotal) { payout += hb * 2; return `Win +${hb * 2}`; }
+      if (pt === dTotal) { payout += hb; return "Push"; }
+      return "Loss";
+    });
+    if (payout > 0) syncBalance(balRef.current + payout);
+    setResults(res);
+    setPhase("gameover");
+    setBusyBoth(false);
   };
 
-  // Player Doubles
-  const double = () => {
-    if (bet * 2 > balance) {
-      alert("Not enough Conscious Cash to double!");
+  // ── Advance hand ──────────────────────────────────────────────────────────
+  const advanceHand = async () => {
+    const next = ahiRef.current + 1;
+    if (next < phRef.current.length) {
+      const nextHand = phRef.current[next];
+      if (nextHand.length === 1) {
+        await sleep(300);
+        const c = deckRef.current.pop();
+        const updated = phRef.current.map((h, i) => i === next ? [...h, c] : h);
+        phRef.current = updated;
+        setPlayerHands([...updated]);
+      }
+      ahiRef.current = next;
+      setActiveHandIdx(next);
+      setBusyBoth(false);
+      if (total(phRef.current[next]) >= 21) {
+        await sleep(300);
+        setBusyBoth(true);
+        await advanceHand();
+      }
+    } else {
+      await runDealer();
+    }
+  };
+
+  // ── Deal ──────────────────────────────────────────────────────────────────
+  const deal = async () => {
+    if (busyRef.current || bet < 5) return;
+    setBusyBoth(true);
+    syncBalance(balRef.current - bet);
+    setPhase("exiting");
+    await sleep(380);
+
+    const deck = buildDeck();
+    deckRef.current = deck;
+
+    phRef.current = [[]];
+    dcRef.current = [];
+    ahiRef.current = 0;
+    hbRef.current = [bet];
+    setDealerCards([]);
+    setPlayerHands([[]]);
+    setHandBets([bet]);
+    setActiveHandIdx(0);
+    setResults([]);
+    setShowDealerTotal(false);
+    setPhase("dealing");
+
+    await sleep(200);
+    const p1 = deckRef.current.pop();
+    phRef.current = [[p1]];
+    setPlayerHands([[p1]]);
+
+    await sleep(420);
+    const d1 = deckRef.current.pop();
+    dcRef.current = [d1];
+    setDealerCards([d1]);
+
+    await sleep(420);
+    const p2 = deckRef.current.pop();
+    phRef.current = [[p1, p2]];
+    setPlayerHands([[p1, p2]]);
+
+    await sleep(420);
+    const hole = { ...deckRef.current.pop(), faceDown: true };
+    dcRef.current = [d1, hole];
+    setDealerCards([d1, hole]);
+
+    await sleep(420);
+
+    const phand = [p1, p2];
+    if (isBlackjack(phand)) {
+      const revealed = [d1, { ...hole, faceDown: false }];
+      dcRef.current = revealed;
+      setDealerCards(revealed);
+      setShowDealerTotal(true);
+      await sleep(400);
+      let res, payout;
+      if (isBlackjack(revealed)) {
+        payout = bet;
+        res = "Push";
+      } else {
+        payout = Math.floor(bet * 2.5);
+        res = `Blackjack! +${payout}`;
+      }
+      syncBalance(balRef.current + payout);
+      setResults([res]);
+      setPhase("gameover");
+      setBusyBoth(false);
       return;
     }
 
-    const newBet = bet * 2;
-    const newBalance = balance - bet; // Deduct only the extra amount
-    setBalance(newBalance);
-    localStorage.setItem("balance", newBalance);
-    setBet(newBet);
+    setPhase("playing");
+    setBusyBoth(false);
+  };
 
-    const newHand = [...playerHand, deck.pop()];
-    setPlayerHand(newHand);
-
-    const handValue = calculateHandValue(newHand);
-    if (handValue > 21) {
-      setGameOver(true);
-      setMessage("Bust! Dealer Wins!");
-    } else if (handValue === 21) {
-      handleWin(); // Auto-win if player hits 21
-      setMessage("BLACKJACK!!")
+  // ── Player actions ────────────────────────────────────────────────────────
+  const hit = async () => {
+    if (busyRef.current) return;
+    setBusyBoth(true);
+    const c = deckRef.current.pop();
+    const idx = ahiRef.current;
+    const updated = phRef.current.map((h, i) => i === idx ? [...h, c] : h);
+    phRef.current = updated;
+    setPlayerHands([...updated]);
+    const t = total(updated[idx]);
+    if (t >= 21) {
+      await sleep(400);
+      await advanceHand();
     } else {
-      stand();
+      setBusyBoth(false);
     }
   };
 
-  // Player Stands (Dealer's Turn)
-  const stand = () => {
-    let dealerValue = calculateHandValue(dealerHand);
-    let newDeck = [...deck];
+  const stand = async () => {
+    if (busyRef.current) return;
+    setBusyBoth(true);
+    await advanceHand();
+  };
 
-    while (dealerValue < 17) {
-      dealerHand.push(newDeck.pop());
-      dealerValue = calculateHandValue(dealerHand);
-    }
+  const doDouble = async () => {
+    if (busyRef.current) return;
+    const idx = ahiRef.current;
+    const hb = hbRef.current[idx];
+    if (balRef.current < hb) return;
+    setBusyBoth(true);
+    syncBalance(balRef.current - hb);
+    const newBets = hbRef.current.map((b, i) => i === idx ? b * 2 : b);
+    hbRef.current = newBets;
+    setHandBets([...newBets]);
+    const c = deckRef.current.pop();
+    const updated = phRef.current.map((h, i) => i === idx ? [...h, c] : h);
+    phRef.current = updated;
+    setPlayerHands([...updated]);
+    await sleep(400);
+    await advanceHand();
+  };
 
-    setDeck(newDeck);
-    setDealerHand([...dealerHand]);
+  const doSplit = async () => {
+    if (busyRef.current) return;
+    const idx = ahiRef.current;
+    const hand = phRef.current[idx];
+    if (hand.length !== 2 || hand[0].rank !== hand[1].rank) return;
+    const hb = hbRef.current[idx];
+    if (balRef.current < hb) return;
+    setBusyBoth(true);
+    syncBalance(balRef.current - hb);
 
-    let playerValue = calculateHandValue(playerHand);
-    if (dealerValue > 21 || playerValue > dealerValue) {
-      handleWin();
-    } else if (dealerValue === playerValue) {
-      setMessage("It's a Push!");
-      const newBalance = balance + bet;
-      setBalance(newBalance);
-      localStorage.setItem("balance", newBalance);
-      setGameOver(true);
-    } else {
-      setMessage("Dealer Wins!");
-      setGameOver(true);
+    const newHands = [...phRef.current];
+    newHands.splice(idx, 1, [hand[0]], [hand[1]]);
+    const newBets = [...hbRef.current];
+    newBets.splice(idx, 1, hb, hb);
+    phRef.current = newHands;
+    hbRef.current = newBets;
+    setPlayerHands([...newHands]);
+    setHandBets([...newBets]);
+
+    await sleep(300);
+    const c1 = deckRef.current.pop();
+    const h1 = phRef.current.map((h, i) => i === idx ? [...h, c1] : h);
+    phRef.current = h1;
+    setPlayerHands([...h1]);
+
+    await sleep(420);
+    const c2 = deckRef.current.pop();
+    const h2 = phRef.current.map((h, i) => i === idx + 1 ? [...h, c2] : h);
+    phRef.current = h2;
+    setPlayerHands([...h2]);
+
+    setBusyBoth(false);
+    if (total(phRef.current[idx]) >= 21) {
+      await sleep(300);
+      setBusyBoth(true);
+      await advanceHand();
     }
   };
 
+  const playAgain = () => {
+    setBet(0);
+    setDealerCards([]);
+    setPlayerHands([]);
+    setHandBets([]);
+    setResults([]);
+    setActiveHandIdx(0);
+    setShowDealerTotal(false);
+    setBusyBoth(false);
+    ahiRef.current = 0;
+    phRef.current = [];
+    hbRef.current = [];
+    dcRef.current = [];
+    deckRef.current = [];
+    setPhase("betting");
+  };
+
+  // ── Derived ───────────────────────────────────────────────────────────────
+  const activeHand = playerHands[activeHandIdx] || [];
+  const activeHandBet = handBets[activeHandIdx] || 0;
+  const at = total(activeHand);
+  const canHit = !busy && at < 21;
+  const canStand = !busy;
+  const canDouble = !busy && activeHand.length === 2 && balance >= activeHandBet;
+  const canSplit = !busy && activeHand.length === 2
+    && activeHand[0]?.rank === activeHand[1]?.rank
+    && balance >= activeHandBet;
+
+  const inGame = phase === "dealing" || phase === "playing" || phase === "gameover";
+
+  // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="blackjack-game">
-      <h1>Mindful Blackjack</h1>
+    <div className={`blackjack-game${inGame ? " bj-ingame" : ""}`}>
+      <h1 className={`bj-title${inGame ? " bj-title-top" : ""}`}>
+        Mindful Blackjack
+      </h1>
 
-      {/* Balance Section */}
       <div className="balance-section">
-        <span className="conscious-cash"> Conscious Cash: <span> ${balance} </span> </span>
+        <span className="conscious-cash">
+          Conscious Cash: <span>${balance}</span>
+        </span>
       </div>
 
-      {/* Betting Section */}
-      {!gameStarted && (
-        <div className="betting-section">
-          <input
-            type="number"
-            value={bet}
-            onChange={(e) => setBet(Number(e.target.value))}
-            min="10"
-            max={balance}
-            className="bet-input"
-          />
-          <button onClick={placeBet} className="bet-button">Deal Cards</button>
+      {/* Betting screen */}
+      {(phase === "betting" || phase === "exiting") && (
+        <div className={`betting-wrapper${phase === "exiting" ? " bj-exit" : ""}`}>
+          <div className="betting-section">
+            <div className="bet-display">${bet}</div>
+            <div className="chip-row">
+              {CHIPS.map(amt => (
+                <button
+                  key={amt}
+                  className="chip-btn"
+                  onClick={() => addChip(amt)}
+                  disabled={bet + amt > balance}
+                >
+                  +{amt}
+                </button>
+              ))}
+              <button
+                className="chip-btn chip-clear"
+                onClick={() => setBet(0)}
+                disabled={bet === 0}
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+          <button className="deal-btn" onClick={deal} disabled={bet < 5 || bet > balance}>
+            Deal Cards
+          </button>
+          <button className="bj-back" onClick={() => navigate("/")}>
+            Back to Home
+          </button>
         </div>
       )}
 
-      {/* Show game only after placing a bet */}
-      {gameStarted && (
-        <>
-          <div className="hand">
-            <h2>Dealer's Hand</h2>
-            <div className="cards">
-              {gameOver ? (
-                dealerHand.map((card, index) => (
-                  <span key={index}>{card.value}{card.suit} </span>
-                ))
-              ) : (
-                <span>{dealerHand[0].value}{dealerHand[0].suit} ?</span>
-              )}
+      {/* Game area */}
+      {inGame && (
+        <div className="game-area">
+          <div className="hand-area">
+            <div className="hand-label">
+              Dealer{showDealerTotal ? ` — ${total(dealerCards)}` : ""}
+            </div>
+            <div className="cards-row">
+              {dealerCards.map(c => <Card key={c.id} card={c} />)}
             </div>
           </div>
 
-          <div className="hand">
-            <h2>Your Hand</h2>
-            <div className="cards">
-              {playerHand.map((card, index) => (
-                <span key={index}>{card.value}{card.suit} </span>
-              ))}
-            </div>
+          <div className="player-hands">
+            {playerHands.map((hand, hi) => {
+              const ht = total(hand);
+              const res = results[hi];
+              const active = hi === activeHandIdx && phase === "playing";
+              return (
+                <div key={hi} className={`hand-area${active ? " active-hand" : ""}`}>
+                  <div className="hand-label">
+                    {playerHands.length > 1 ? `Hand ${hi + 1} ` : "You "}
+                    — {ht}{res ? ` · ${res}` : ""}
+                  </div>
+                  <div className="cards-row">
+                    {hand.map(c => <Card key={c.id} card={c} />)}
+                  </div>
+                  {handBets[hi] != null && (
+                    <div className="hand-bet">Bet: ${handBets[hi]}</div>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
-          <h2>{message}</h2>
-
-          {!gameOver && (
-            <div className="buttons">
-              <button onClick={hit} disabled={calculateHandValue(playerHand) === 21}>Hit</button>
-              <button onClick={stand} disabled={calculateHandValue(playerHand) === 21}>Stand</button>
-              <button className="double-button" onClick={double} disabled={calculateHandValue(playerHand) === 21}>Double</button>
+          {phase === "playing" && (
+            <div className="action-btns">
+              <button onClick={hit} disabled={!canHit}>Hit</button>
+              <button onClick={stand} disabled={!canStand}>Stand</button>
+              <button onClick={doDouble} disabled={!canDouble}>Double</button>
+              <button onClick={doSplit} disabled={!canSplit}>Split</button>
             </div>
           )}
 
-          {gameOver && (
-            <button className="play-again-button" onClick={() => window.location.reload()}>
-              Play Again
-            </button>
+          {phase === "gameover" && (
+            <div className="gameover-actions">
+              <button className="deal-btn" onClick={playAgain}>Play Again</button>
+              <button className="bj-back" onClick={() => navigate("/")}>
+                Back to Home
+              </button>
+            </div>
           )}
-        </>
+        </div>
       )}
-
-      <button className="back-button" onClick={() => navigate("/")}>
-        Back to Home
-      </button>
     </div>
   );
 };
