@@ -130,7 +130,7 @@ const Blackjack = () => {
         payout += hb * 2;
         totalProfit += hb;
         if (currentUser) updateStats(currentUser.uid, "blackjack", { won: true, wagered: hb, profit: hb });
-        return `Win +${hb}`;
+        return `Win +$${hb * 2}`;
       }
       if (pt === dTotal) {
         payout += hb;
@@ -235,7 +235,7 @@ const Blackjack = () => {
       } else {
         const profit = Math.floor(betAmount * 1.5);
         payout = betAmount + profit;
-        res = `Blackjack! +$${profit}`;
+        res = `Blackjack! +$${payout}`;
         if (currentUser) {
           updateStats(currentUser.uid, "blackjack", { won: true, wagered: betAmount, profit });
           updateBiggestWin(currentUser.uid, profit);

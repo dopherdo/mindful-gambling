@@ -12,6 +12,7 @@ const Profile = () => {
   const [userData, setUserData] = useState(null);
   const [editing, setEditing] = useState(false);
   const [newName, setNewName] = useState("");
+  const [newUsername, setNewUsername] = useState("");
 
   useEffect(() => {
     if (!currentUser) {
@@ -24,10 +25,18 @@ const Profile = () => {
     return unsubscribe;
   }, [currentUser, navigate]);
 
-  const saveDisplayName = async () => {
-    if (!newName.trim()) return;
-    await updateDoc(doc(db, "users", currentUser.uid), { displayName: newName.trim() });
-    await updateProfile(auth.currentUser, { displayName: newName.trim() });
+  const saveProfile = async () => {
+    const updates = {};
+    if (newName.trim()) {
+      updates.displayName = newName.trim();
+      await updateProfile(auth.currentUser, { displayName: newName.trim() });
+    }
+    if (newUsername.trim() && newUsername.trim() !== userData.username) {
+      updates.username = newUsername.trim().toLowerCase();
+    }
+    if (Object.keys(updates).length > 0) {
+      await updateDoc(doc(db, "users", currentUser.uid), updates);
+    }
     setEditing(false);
   };
 
@@ -46,32 +55,45 @@ const Profile = () => {
   return (
     <div className="profile-page">
       <div className="profile-header">
-        <button className="back-button" onClick={() => navigate("/")}>← BJ Central</button>
+        <button className="back-button" onClick={() => navigate("/")}>Back</button>
         <button className="logout-button" onClick={handleLogout}>Sign Out</button>
       </div>
 
-      <div className="profile-name-section">
+      <div className="profile-identity">
         {editing ? (
-          <div className="profile-name-edit">
+          <div className="profile-edit-form">
             <input
-              className="profile-name-input"
+              className="profile-input"
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               placeholder="Display name"
               autoFocus
             />
-            <button className="save-button" onClick={saveDisplayName}>Save</button>
-            <button className="cancel-edit-button" onClick={() => setEditing(false)}>Cancel</button>
+            <input
+              className="profile-input"
+              value={newUsername}
+              onChange={(e) => setNewUsername(e.target.value)}
+              placeholder="Username"
+            />
+            <div className="profile-edit-actions">
+              <button className="save-button" onClick={saveProfile}>Save</button>
+              <button className="cancel-button" onClick={() => setEditing(false)}>Cancel</button>
+            </div>
           </div>
         ) : (
-          <div className="profile-name-row">
-            <h1 className="profile-name">{userData.displayName || "Anonymous"}</h1>
-            <button className="edit-button" onClick={() => { setNewName(userData.displayName || ""); setEditing(true); }}>
-              Edit
-            </button>
-          </div>
+          <>
+            <div className="profile-name-row">
+              <h1 className="profile-name">{userData.displayName || "Anonymous"}</h1>
+              <button className="edit-button" onClick={() => { setNewName(userData.displayName || ""); setNewUsername(userData.username || ""); setEditing(true); }}>
+                Edit
+              </button>
+            </div>
+            {userData.username && (
+              <p className="profile-username">@{userData.username}</p>
+            )}
+            <p className="profile-email">{userData.email}</p>
+          </>
         )}
-        <p className="profile-email">{userData.email}</p>
       </div>
 
       <div className="stats-grid">

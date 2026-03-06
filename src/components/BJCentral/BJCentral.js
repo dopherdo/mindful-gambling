@@ -41,6 +41,7 @@ const BJCentral = () => {
           <p className="mode-desc">Play with awareness. Break the chase cycle.</p>
         </button>
       </div>
+
     </div>
   );
 };

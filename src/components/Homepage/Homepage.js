@@ -25,7 +25,6 @@ const Homepage = () => {
 
   return (
     <div className="homepage">
-      {/* Top bar — constrained to content width */}
       <div className="page-topbar">
         <BJCentralBack />
         <div className="topbar-right">
@@ -62,29 +61,32 @@ const Homepage = () => {
         </div>
       </div>
 
-      <h2 className="info-text">Make every bet a mindful one.</h2>
-      <h1 className="home-title">Mindful Gambling</h1>
+      <div className="homepage-hero">
+        <h2 className="info-text">Make every bet a mindful one.</h2>
+        <h1 className="home-title">Mindful Gambling</h1>
+      </div>
 
-      {/* Game Options */}
       <div className="game-options">
-        <button className="blackjack-button" onClick={() => navigate("/mindful/blackjack")}>
-          Blackjack
+        <button className="game-card" onClick={() => navigate("/mindful/blackjack")}>
+          <span className="game-card-label">Blackjack</span>
         </button>
-        <button className="roulette-button" onClick={() => navigate("/mindful/roulette")}>
-          Roulette
+        <button className="game-card" onClick={() => navigate("/mindful/roulette")}>
+          <span className="game-card-label">Roulette</span>
         </button>
       </div>
 
-      {/* Science Button */}
       <button className="science-button" onClick={() => setShowModal(true)}>
         The Science
       </button>
 
-      {/* Info Modal */}
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setShowModal(false)}>✕</button>
+            <button className="modal-close" onClick={() => setShowModal(false)}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M18 6L6 18M6 6l12 12"/>
+              </svg>
+            </button>
 
             <h2 className="modal-title">Why Mindful Gambling?</h2>
 
@@ -118,7 +120,7 @@ const Homepage = () => {
                 rel="noopener noreferrer"
                 className="modal-link"
               >
-                How to Break the Cycle of Gambling Action →
+                How to Break the Cycle of Gambling Action
               </a>
               <a
                 href="https://www.headward.co.uk/blogcontent/2024/2/29/gambling-addiction-recovery-why-you-have-to-stop-chasing-losses"
@@ -126,7 +128,7 @@ const Homepage = () => {
                 rel="noopener noreferrer"
                 className="modal-link"
               >
-                Gambling Addiction Recovery: Why You Have to Stop Chasing Losses →
+                Gambling Addiction Recovery: Why You Have to Stop Chasing Losses
               </a>
             </div>
           </div>

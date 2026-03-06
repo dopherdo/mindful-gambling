@@ -20,10 +20,17 @@ const Leaderboard = () => {
     return unsubscribe;
   }, []);
 
+  const getRankDisplay = (i) => {
+    if (i === 0) return "1";
+    if (i === 1) return "2";
+    if (i === 2) return "3";
+    return `${i + 1}`;
+  };
+
   return (
     <div className="leaderboard-page">
       <div className="leaderboard-header">
-        <button className="back-button" onClick={() => navigate("/")}>← BJ Central</button>
+        <button className="back-button" onClick={() => navigate("/")}>Back</button>
         <h1 className="leaderboard-title">Leaderboard</h1>
       </div>
 
@@ -32,24 +39,23 @@ const Leaderboard = () => {
       ) : (
         <div className="leaderboard-table">
           <div className="leaderboard-row leaderboard-head">
-            <span className="col-rank">Rank</span>
+            <span className="col-rank">#</span>
             <span className="col-name">Player</span>
             <span className="col-balance">Balance</span>
             <span className="col-wins">Wins</span>
-            <span className="col-videos">Videos</span>
           </div>
           {players.map((player, i) => (
             <div
               key={player.id}
-              className={`leaderboard-row ${currentUser && player.id === currentUser.uid ? "current-user" : ""}`}
+              className={`leaderboard-row ${currentUser && player.id === currentUser.uid ? "current-user" : ""} ${i < 3 ? `top-${i + 1}` : ""}`}
             >
-              <span className="col-rank">
-                {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`}
+              <span className="col-rank">{getRankDisplay(i)}</span>
+              <span className="col-name">
+                <span className="player-display">{player.displayName || "Anonymous"}</span>
+                {player.username && <span className="player-username">@{player.username}</span>}
               </span>
-              <span className="col-name">{player.displayName || "Anonymous"}</span>
               <span className="col-balance">${player.balance ?? 0}</span>
               <span className="col-wins">{player.stats?.totalWins ?? 0}</span>
-              <span className="col-videos">{player.stats?.videosWatched ?? 0}</span>
             </div>
           ))}
         </div>

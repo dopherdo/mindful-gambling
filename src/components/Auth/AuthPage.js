@@ -6,8 +6,9 @@ import "./AuthPage.css";
 const AuthPage = () => {
   const navigate = useNavigate();
   const { login, register, loginWithGoogle } = useAuth();
-  const [mode, setMode] = useState("login"); // "login" | "register"
+  const [mode, setMode] = useState("login");
   const [displayName, setDisplayName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -16,16 +17,32 @@ const AuthPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (mode === "register") {
+      if (!username.trim()) {
+        setError("Username is required.");
+        return;
+      }
+      if (username.trim().length < 3) {
+        setError("Username must be at least 3 characters.");
+        return;
+      }
+      if (!/^[a-zA-Z0-9_]+$/.test(username.trim())) {
+        setError("Username can only contain letters, numbers, and underscores.");
+        return;
+      }
+    }
+
     setLoading(true);
     try {
       if (mode === "register") {
-        await register(email, password, displayName);
+        await register(email, password, displayName, username.trim().toLowerCase());
       } else {
         await login(email, password);
       }
       navigate("/");
     } catch (err) {
-      setError(friendlyError(err.code));
+      setError(friendlyError(err.code || err.message));
     } finally {
       setLoading(false);
     }
@@ -56,6 +73,8 @@ const AuthPage = () => {
         return "Password must be at least 6 characters.";
       case "auth/invalid-email":
         return "Please enter a valid email address.";
+      case "username-taken":
+        return "This username is already taken.";
       default:
         return "Something went wrong. Please try again.";
     }
@@ -64,7 +83,8 @@ const AuthPage = () => {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1 className="auth-title">Mindful Gambling</h1>
+        <h1 className="auth-title">BJ Central</h1>
+        <p className="auth-subtitle">Sign in to track your stats</p>
 
         <div className="auth-tabs">
           <button
@@ -83,14 +103,25 @@ const AuthPage = () => {
 
         <form onSubmit={handleSubmit} className="auth-form">
           {mode === "register" && (
-            <input
-              className="auth-input"
-              type="text"
-              placeholder="Display name"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              required
-            />
+            <>
+              <input
+                className="auth-input"
+                type="text"
+                placeholder="Display name"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                required
+              />
+              <input
+                className="auth-input"
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                autoComplete="off"
+              />
+            </>
           )}
           <input
             className="auth-input"

@@ -7,7 +7,7 @@ import {
   onAuthStateChanged,
   updateProfile,
 } from "firebase/auth";
-import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, getDoc, getDocs, collection, query, where, serverTimestamp } from "firebase/firestore";
 import { auth, db, googleProvider } from "../firebase";
 
 const AuthContext = createContext();
@@ -18,11 +18,25 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
 
-  const register = async (email, password, displayName) => {
+  const checkUsernameAvailable = async (username) => {
+    const q = query(collection(db, "users"), where("username", "==", username));
+    const snap = await getDocs(q);
+    return snap.empty;
+  };
+
+  const register = async (email, password, displayName, username) => {
+    const available = await checkUsernameAvailable(username);
+    if (!available) {
+      const err = new Error("Username is already taken.");
+      err.code = "username-taken";
+      throw err;
+    }
+
     const credential = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(credential.user, { displayName });
     await setDoc(doc(db, "users", credential.user.uid), {
       displayName,
+      username,
       email,
       createdAt: serverTimestamp(),
       balance: 100,
@@ -55,8 +69,15 @@ export const AuthProvider = ({ children }) => {
     const userRef = doc(db, "users", credential.user.uid);
     const snap = await getDoc(userRef);
     if (!snap.exists()) {
+      const baseUsername = (credential.user.displayName || "user")
+        .toLowerCase()
+        .replace(/[^a-z0-9_]/g, "")
+        .slice(0, 15);
+      const username = baseUsername + "_" + Math.floor(Math.random() * 9000 + 1000);
+
       await setDoc(userRef, {
         displayName: credential.user.displayName,
+        username,
         email: credential.user.email,
         createdAt: serverTimestamp(),
         balance: 100,

@@ -7,25 +7,25 @@
   overflow: hidden;
   background: var(--bg-base);
   color: var(--text-primary);
-  font-family: 'Lato', sans-serif;
+  font-family: inherit;
   text-align: center;
   position: relative;
   padding: 48px 20px 32px;
   box-sizing: border-box;
-  animation: pageEnter 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: pageEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .roulette-game h1 {
-  font-size: clamp(20px, 4.5vw, 36px);
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  margin: 0 0 clamp(16px, 3.5vw, 28px);
+  font-size: clamp(20px, 4.5vw, 34px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  margin: 0 0 clamp(16px, 3.5vw, 24px);
   color: var(--text-primary);
 }
 
 .roulette-game h2 {
-  font-size: clamp(14px, 3vw, 18px);
-  font-weight: 700;
+  font-size: clamp(13px, 3vw, 16px);
+  font-weight: 500;
   margin: 10px 0 0;
   letter-spacing: -0.01em;
   color: var(--text-primary);
@@ -41,17 +41,17 @@
   gap: 8px;
 }
 
-/* ── Betting card ─────────────────────────────────────────────────────────── */
+/* ── Betting card ────────────────────────────────────────────────────────── */
 .betting-section {
   display: flex;
   flex-direction: column;
   align-items: center;
   background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: 14px;
-  padding: clamp(16px, 3.5vw, 28px) clamp(16px, 4vw, 28px);
-  gap: 10px;
-  width: min(360px, 94vw);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-lg);
+  padding: clamp(16px, 3.5vw, 24px) clamp(16px, 4vw, 24px);
+  gap: 8px;
+  width: min(340px, 94vw);
   box-sizing: border-box;
 }
 
@@ -59,115 +59,114 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 7px;
+  gap: 5px;
   width: 100%;
 }
 
 .bet-input {
   width: 100%;
-  max-width: 130px;
-  padding: 9px 12px;
+  max-width: 120px;
+  padding: 8px 10px;
   font-size: clamp(14px, 3vw, 15px);
-  font-family: 'Lato', sans-serif;
-  font-weight: 700;
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
-  border-radius: 8px;
-  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-dim);
   text-align: center;
-  background: var(--bg-elevated);
+  background: var(--bg-base);
   color: var(--text-primary);
   outline: none;
   box-sizing: border-box;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s ease;
 }
 
 .bet-input:focus {
-  border-color: var(--border-bright);
+  border-color: var(--border-default);
 }
 
 .bet-number {
-  width: 80px;
+  width: 72px;
   flex-shrink: 0;
-  padding: 9px 10px;
+  padding: 8px 8px;
   font-size: clamp(13px, 2.5vw, 14px);
-  font-family: 'Lato', sans-serif;
-  border-radius: 8px;
-  border: 1px solid var(--border-default);
+  font-family: 'Roboto Mono', monospace;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-dim);
   text-align: center;
-  background: var(--bg-elevated);
+  background: var(--bg-base);
   color: var(--text-primary);
   outline: none;
   box-sizing: border-box;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s ease;
 }
 
 .bet-number:focus {
-  border-color: var(--border-bright);
+  border-color: var(--border-default);
 }
 
 /* Generic bet buttons */
 .roulette-game .betting-section button {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-default);
-  color: var(--text-primary);
-  padding: 7px clamp(10px, 2.5vw, 16px);
-  font-size: clamp(11px, 2.5vw, 13px);
-  font-weight: 700;
-  font-family: 'Lato', sans-serif;
-  border-radius: 8px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-dim);
+  color: var(--text-secondary);
+  padding: 7px clamp(10px, 2.5vw, 14px);
+  font-size: clamp(11px, 2.5vw, 12px);
+  font-weight: 500;
+  font-family: inherit;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition: all 0.2s ease;
   white-space: nowrap;
 }
 
 .roulette-game .betting-section button:hover {
-  background: var(--bg-active);
-  border-color: var(--border-bright);
+  background: var(--bg-elevated);
+  border-color: var(--border-subtle);
+  color: var(--text-primary);
 }
 
-/* ── Spin button ──────────────────────────────────────────────────────────── */
+/* ── Spin button ─────────────────────────────────────────────────────────── */
 .spin-button {
-  background: var(--accent);
-  color: #ffffff;
+  background: var(--text-primary);
+  color: var(--bg-base);
   padding: 11px 0;
-  font-size: clamp(13px, 2.5vw, 15px);
-  font-weight: 900;
-  font-family: 'Lato', sans-serif;
-  letter-spacing: 0.05em;
+  font-size: clamp(13px, 2.5vw, 14px);
+  font-weight: 500;
+  font-family: inherit;
+  letter-spacing: 0.01em;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  margin-top: 10px;
-  transition: opacity 0.2s;
-  width: min(360px, 94vw);
+  margin-top: 8px;
+  transition: opacity 0.2s ease;
+  width: min(340px, 94vw);
   box-sizing: border-box;
 }
 
 .spin-button:hover {
-  opacity: 0.88;
+  opacity: 0.85;
 }
 
-/* ── Result display ───────────────────────────────────────────────────────── */
+/* ── Result display ──────────────────────────────────────────────────────── */
 .wheel-result {
-  font-size: clamp(12px, 2.5vw, 15px);
-  font-weight: 600;
+  font-size: clamp(12px, 2.5vw, 14px);
+  font-weight: 400;
   margin-top: 12px;
   color: var(--text-secondary);
-  letter-spacing: 0.01em;
   min-height: 1.4em;
 }
 
-/* ── Back button ──────────────────────────────────────────────────────────── */
+/* ── Back button ─────────────────────────────────────────────────────────── */
 .back-button {
   background: none;
   border: none;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   font-size: 12px;
-  font-weight: 600;
-  font-family: 'Lato', sans-serif;
-  letter-spacing: 0.04em;
+  font-weight: 400;
+  font-family: inherit;
   cursor: pointer;
-  padding: 6px 10px;
+  padding: 6px 8px;
   margin-top: 4px;
   transition: color 0.2s;
 }
@@ -175,5 +174,5 @@
 .back-button:hover {
   background: none;
   border: none;
-  color: var(--text-primary);
+  color: var(--text-secondary);
 }
