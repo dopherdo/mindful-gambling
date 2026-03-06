@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BJ Central — Final Logo</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #080808;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 80px 40px;
+    gap: 80px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .row {
+    display: flex;
+    gap: 80px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .version {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .bg {
+    width: 220px;
+    height: 220px;
+    border-radius: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: rise 0.9s cubic-bezier(.22,1,.36,1) both;
+  }
+
+  .dark-bg  {
+    background: #111111;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.06),
+                0 24px 60px rgba(0,0,0,0.6);
+  }
+  .light-bg {
+    background: #f0f0f0;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.06),
+                0 24px 60px rgba(0,0,0,0.35);
+  }
+
+  .v2 { animation-delay: 0.12s; }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(20px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .label {
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.18);
+  }
+
+  /* Small sizes row */
+  .sizes {
+    display: flex;
+    gap: 48px;
+    align-items: center;
+    justify-content: center;
+  }
+  .size-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .size-label {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.12);
+  }
+  .pill {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pill.dark-bg  { background: #111; }
+  .pill.light-bg { background: #f0f0f0; }
+
+  /* divider */
+  .divider {
+    width: 1px;
+    height: 60px;
+    background: rgba(255,255,255,0.06);
+  }
+</style>
+</head>
+<body>
+
+  <!-- PRIMARY LOGOS -->
+  <div class="row">
+
+    <!-- DARK VERSION -->
+    <div class="version">
+      <div class="bg dark-bg">
+        <svg width="140" height="140" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="dark-back-fill" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#2c2c2c"/>
+              <stop offset="100%" stop-color="#151515"/>
+            </linearGradient>
+            <linearGradient id="dark-back-stroke" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#888888"/>
+              <stop offset="100%" stop-color="#333333"/>
+            </linearGradient>
+            <linearGradient id="dark-front-fill" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#2e2e2e"/>
+              <stop offset="100%" stop-color="#181818"/>
+            </linearGradient>
+            <linearGradient id="dark-front-stroke" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="60%" stop-color="#c0c0c0"/>
+              <stop offset="100%" stop-color="#606060"/>
+            </linearGradient>
+            <!-- subtle inner sheen on front card -->
+            <linearGradient id="dark-sheen" x1="0" y1="0" x2="0.5" y2="1">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.04"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Back card -->
+          <rect x="12" y="22" width="68" height="96" rx="10"
+            transform="rotate(-20 46 70)"
+            fill="url(#dark-back-fill)"
+            stroke="url(#dark-back-stroke)"
+            stroke-width="2.5"/>
+
+          <!-- Front card -->
+          <rect x="60" y="22" width="68" height="96" rx="10"
+            transform="rotate(12 94 70)"
+            fill="url(#dark-front-fill)"
+            stroke="url(#dark-front-stroke)"
+            stroke-width="2.5"/>
+
+          <!-- Sheen overlay on front card -->
+          <rect x="60" y="22" width="68" height="96" rx="10"
+            transform="rotate(12 94 70)"
+            fill="url(#dark-sheen)"/>
+        </svg>
+      </div>
+      <div class="label">Dark</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- LIGHT VERSION -->
+    <div class="version">
+      <div class="bg light-bg v2">
+        <svg width="140" height="140" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="light-back-fill" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#d8d8d8"/>
+              <stop offset="100%" stop-color="#c0c0c0"/>
+            </linearGradient>
+            <linearGradient id="light-back-stroke" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#aaaaaa"/>
+              <stop offset="100%" stop-color="#dddddd"/>
+            </linearGradient>
+            <linearGradient id="light-front-fill" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="100%" stop-color="#e8e8e8"/>
+            </linearGradient>
+            <linearGradient id="light-front-stroke" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#222222"/>
+              <stop offset="60%" stop-color="#555555"/>
+              <stop offset="100%" stop-color="#aaaaaa"/>
+            </linearGradient>
+            <linearGradient id="light-sheen" x1="0" y1="0" x2="0.5" y2="1">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Back card -->
+          <rect x="12" y="22" width="68" height="96" rx="10"
+            transform="rotate(-20 46 70)"
+            fill="url(#light-back-fill)"
+            stroke="url(#light-back-stroke)"
+            stroke-width="2.5"/>
+
+          <!-- Front card -->
+          <rect x="60" y="22" width="68" height="96" rx="10"
+            transform="rotate(12 94 70)"
+            fill="url(#light-front-fill)"
+            stroke="url(#light-front-stroke)"
+            stroke-width="2.5"/>
+
+          <!-- Sheen on front card -->
+          <rect x="60" y="22" width="68" height="96" rx="10"
+            transform="rotate(12 94 70)"
+            fill="url(#light-sheen)"/>
+        </svg>
+      </div>
+      <div class="label">Light</div>
+    </div>
+
+  </div>
+
+  <!-- SMALL SIZES -->
+  <div class="sizes">
+
+    <!-- Dark small sizes -->
+    <div class="size-item">
+      <div class="pill dark-bg" style="width:80px;height:80px;border-radius:16px;">
+        <svg width="52" height="52" viewBox="0 0 140 140" fill="none">
+          <defs>
+            <linearGradient id="sm-d-back" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#888"/><stop offset="100%" stop-color="#333"/>
+            </linearGradient>
+            <linearGradient id="sm-d-front" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#666"/>
+            </linearGradient>
+          </defs>
+          <rect x="12" y="22" width="68" height="96" rx="10" transform="rotate(-20 46 70)"
+            fill="#222" stroke="url(#sm-d-back)" stroke-width="2.5"/>
+          <rect x="60" y="22" width="68" height="96" rx="10" transform="rotate(12 94 70)"
+            fill="#222" stroke="url(#sm-d-front)" stroke-width="2.5"/>
+        </svg>
+      </div>
+      <div class="size-label">80px</div>
+    </div>
+
+    <div class="size-item">
+      <div class="pill dark-bg" style="width:56px;height:56px;border-radius:12px;">
+        <svg width="36" height="36" viewBox="0 0 140 140" fill="none">
+          <defs>
+            <linearGradient id="sm2-d-back" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#888"/><stop offset="100%" stop-color="#333"/>
+            </linearGradient>
+            <linearGradient id="sm2-d-front" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#666"/>
+            </linearGradient>
+          </defs>
+          <rect x="12" y="22" width="68" height="96" rx="10" transform="rotate(-20 46 70)"
+            fill="#222" stroke="url(#sm2-d-back)" stroke-width="3"/>
+          <rect x="60" y="22" width="68" height="96" rx="10" transform="rotate(12 94 70)"
+            fill="#222" stroke="url(#sm2-d-front)" stroke-width="3"/>
+        </svg>
+      </div>
+      <div class="size-label">56px</div>
+    </div>
+
+    <div class="size-item">
+      <div class="pill dark-bg" style="width:40px;height:40px;border-radius:9px;">
+        <svg width="26" height="26" viewBox="0 0 140 140" fill="none">
+          <defs>
+            <linearGradient id="sm3-d-back" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#888"/><stop offset="100%" stop-color="#333"/>
+            </linearGradient>
+            <linearGradient id="sm3-d-front" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#666"/>
+            </linearGradient>
+          </defs>
+          <rect x="12" y="22" width="68" height="96" rx="10" transform="rotate(-20 46 70)"
+            fill="#222" stroke="url(#sm3-d-back)" stroke-width="4"/>
+          <rect x="60" y="22" width="68" height="96" rx="10" transform="rotate(12 94 70)"
+            fill="#222" stroke="url(#sm3-d-front)" stroke-width="4"/>
+        </svg>
+      </div>
+      <div class="size-label">40px</div>
+    </div>
+
+    <div class="divider" style="height:40px;"></div>
+
+    <!-- Light small sizes -->
+    <div class="size-item">
+      <div class="pill light-bg" style="width:80px;height:80px;border-radius:16px;">
+        <svg width="52" height="52" viewBox="0 0 140 140" fill="none">
+          <defs>
+            <linearGradient id="sm-l-back" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#bbb"/><stop offset="100%" stop-color="#ddd"/>
+            </linearGradient>
+            <linearGradient id="sm-l-front" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#111"/><stop offset="100%" stop-color="#666"/>
+            </linearGradient>
+          </defs>
+          <rect x="12" y="22" width="68" height="96" rx="10" transform="rotate(-20 46 70)"
+            fill="#d5d5d5" stroke="url(#sm-l-back)" stroke-width="2.5"/>
+          <rect x="60" y="22" width="68" height="96" rx="10" transform="rotate(12 94 70)"
+            fill="#efefef" stroke="url(#sm-l-front)" stroke-width="2.5"/>
+        </svg>
+      </div>
+      <div class="size-label">80px</div>
+    </div>
+
+    <div class="size-item">
+      <div class="pill light-bg" style="width:56px;height:56px;border-radius:12px;">
+        <svg width="36" height="36" viewBox="0 0 140 140" fill="none">
+          <defs>
+            <linearGradient id="sm2-l-back" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#bbb"/><stop offset="100%" stop-color="#ddd"/>
+            </linearGradient>
+            <linearGradient id="sm2-l-front" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#111"/><stop offset="100%" stop-color="#666"/>
+            </linearGradient>
+          </defs>
+          <rect x="12" y="22" width="68" height="96" rx="10" transform="rotate(-20 46 70)"
+            fill="#d5d5d5" stroke="url(#sm2-l-back)" stroke-width="3"/>
+          <rect x="60" y="22" width="68" height="96" rx="10" transform="rotate(12 94 70)"
+            fill="#efefef" stroke="url(#sm2-l-front)" stroke-width="3"/>
+        </svg>
+      </div>
+      <div class="size-label">56px</div>
+    </div>
+
+    <div class="size-item">
+      <div class="pill light-bg" style="width:40px;height:40px;border-radius:9px;">
+        <svg width="26" height="26" viewBox="0 0 140 140" fill="none">
+          <defs>
+            <linearGradient id="sm3-l-back" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#bbb"/><stop offset="100%" stop-color="#ddd"/>
+            </linearGradient>
+            <linearGradient id="sm3-l-front" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#111"/><stop offset="100%" stop-color="#666"/>
+            </linearGradient>
+          </defs>
+          <rect x="12" y="22" width="68" height="96" rx="10" transform="rotate(-20 46 70)"
+            fill="#d5d5d5" stroke="url(#sm3-l-back)" stroke-width="4"/>
+          <rect x="60" y="22" width="68" height="96" rx="10" transform="rotate(12 94 70)"
+            fill="#efefef" stroke="url(#sm3-l-front)" stroke-width="4"/>
+        </svg>
+      </div>
+      <div class="size-label">40px</div>
+    </div>
+
+  </div>
+
+</body>
+</html>
