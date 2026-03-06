@@ -65,21 +65,23 @@
 .video-button {
   display: flex;
   align-items: center;
-  background: transparent;
-  border: none;
-  color: var(--text-secondary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
   font-size: 12px;
   font-weight: 400;
   font-family: inherit;
   letter-spacing: 0.01em;
-  padding: 6px 10px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   white-space: nowrap;
-  transition: color 0.25s ease;
+  transition: all 0.25s ease;
 }
 
 .video-button:hover {
-  color: var(--text-primary);
+  background: var(--bg-active);
+  border-color: var(--border-default);
 }
 
 /* ── Hamburger button ────────────────────────────────────────────────────── */
@@ -207,23 +209,24 @@
 .science-button {
   margin-top: 24px;
   background: transparent;
-  border: none;
-  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
   font-size: 0.68rem;
   font-weight: 400;
   font-family: inherit;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   cursor: pointer;
-  padding: 8px 12px;
-  transition: color 0.25s ease;
+  padding: 7px 16px;
+  border-radius: var(--radius-sm);
+  transition: all 0.25s ease;
   animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both;
 }
 
 .science-button:hover {
-  color: var(--text-secondary);
-  background: transparent;
-  border: none;
+  color: var(--text-primary);
+  border-color: var(--border-default);
+  background: var(--bg-elevated);
   box-shadow: none;
 }
 

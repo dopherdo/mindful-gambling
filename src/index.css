@@ -14,7 +14,7 @@
   /* Text — warmer whites */
   --text-primary:   #F0EDE8;
   --text-secondary: #6E6D6A;
-  --text-muted:     #3B3A38;
+  --text-muted:     #504F4D;
 
   /* Accent — emerald (Mindful Gambling) */
   --accent:     #3DAA6E;
@@ -55,22 +55,24 @@ html, body {
   position: absolute;
   top: 16px;
   left: 16px;
-  background: transparent;
-  border: none;
-  color: var(--text-secondary);
-  font-size: 13px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-size: 12px;
   font-weight: 400;
   font-family: inherit;
   letter-spacing: 0.01em;
-  padding: 6px 0;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   white-space: nowrap;
-  transition: color 0.25s ease;
+  transition: all 0.25s ease;
   z-index: 10;
 }
 
 .bj-central-back:hover {
-  color: var(--text-primary);
+  background: var(--bg-active);
+  border-color: var(--border-default);
 }
 
 .profile-icon-btn {
@@ -136,7 +138,7 @@ html, body {
   font-weight: 500;
   font-family: inherit;
   letter-spacing: 0.01em;
-  color: var(--text-secondary);
+  color: var(--text-primary);
   background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
   padding: 6px 14px;
@@ -173,6 +175,81 @@ html, body {
 
 .cc-gain { color: #5DBF7E; }
 .cc-loss { color: #BF6B6B; }
+
+/* ── Low balance popup (shared) ───────────────────────────────────────────── */
+.lowbal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+  animation: fadeIn 0.15s ease both;
+}
+
+.lowbal-popup {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: clamp(20px, 4vw, 28px) clamp(18px, 4vw, 24px);
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: center;
+  animation: pageEnter 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+.lowbal-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.lowbal-sub {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  margin: 0 0 0.2rem;
+  line-height: 1.5;
+}
+
+.lowbal-watch {
+  background: var(--text-primary);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.55rem;
+  color: var(--bg-base);
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.lowbal-watch:hover {
+  opacity: 0.85;
+}
+
+.lowbal-dismiss {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0.3rem;
+  transition: color 0.2s;
+}
+
+.lowbal-dismiss:hover {
+  color: var(--text-primary);
+}
 
 /* ── Desktop scale-up ────────────────────────────────────────────────────── */
 @media (min-width: 1024px) {

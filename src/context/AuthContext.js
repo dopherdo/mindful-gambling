@@ -14,6 +14,32 @@ const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
+const newUserDoc = (username, email) => ({
+  username,
+  email,
+  createdAt: serverTimestamp(),
+  balance: 100,
+  chips: 500,
+  globalStats: {
+    totalGamesPlayed: 0,
+    videosWatched: 0,
+  },
+  mindfulStats: {
+    blackjackGames: 0,
+    rouletteGames: 0,
+    totalWins: 0,
+    totalLosses: 0,
+    biggestWin: 0,
+    totalWagered: 0,
+  },
+  counterStats: {
+    handsPlayed: 0,
+    correctCounts: 0,
+    accuracy: 0,
+  },
+  lastUpdated: serverTimestamp(),
+});
+
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
@@ -24,7 +50,7 @@ export const AuthProvider = ({ children }) => {
     return snap.empty;
   };
 
-  const register = async (email, password, displayName, username) => {
+  const register = async (email, password, username) => {
     const available = await checkUsernameAvailable(username);
     if (!available) {
       const err = new Error("Username is already taken.");
@@ -33,31 +59,8 @@ export const AuthProvider = ({ children }) => {
     }
 
     const credential = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(credential.user, { displayName });
-    await setDoc(doc(db, "users", credential.user.uid), {
-      displayName,
-      username,
-      email,
-      createdAt: serverTimestamp(),
-      balance: 100,
-      chips: 500,
-      stats: {
-        totalGamesPlayed: 0,
-        totalWins: 0,
-        totalLosses: 0,
-        biggestWin: 0,
-        totalWagered: 0,
-        videosWatched: 0,
-        blackjackGames: 0,
-        rouletteGames: 0,
-      },
-      ccStats: {
-        handsPlayed: 0,
-        correctCounts: 0,
-        accuracy: 0,
-      },
-      lastUpdated: serverTimestamp(),
-    });
+    await updateProfile(credential.user, { displayName: username });
+    await setDoc(doc(db, "users", credential.user.uid), newUserDoc(username, email));
     return credential;
   };
 
@@ -69,36 +72,9 @@ export const AuthProvider = ({ children }) => {
     const userRef = doc(db, "users", credential.user.uid);
     const snap = await getDoc(userRef);
     if (!snap.exists()) {
-      const baseUsername = (credential.user.displayName || "user")
-        .toLowerCase()
-        .replace(/[^a-z0-9_]/g, "")
-        .slice(0, 15);
-      const username = baseUsername + "_" + Math.floor(Math.random() * 9000 + 1000);
-
-      await setDoc(userRef, {
-        displayName: credential.user.displayName,
-        username,
-        email: credential.user.email,
-        createdAt: serverTimestamp(),
-        balance: 100,
-        chips: 500,
-        stats: {
-          totalGamesPlayed: 0,
-          totalWins: 0,
-          totalLosses: 0,
-          biggestWin: 0,
-          totalWagered: 0,
-          videosWatched: 0,
-          blackjackGames: 0,
-          rouletteGames: 0,
-        },
-        ccStats: {
-          handsPlayed: 0,
-          correctCounts: 0,
-          accuracy: 0,
-        },
-        lastUpdated: serverTimestamp(),
-      });
+      const username = "user_" + Math.floor(Math.random() * 90000000 + 10000000);
+      await updateProfile(credential.user, { displayName: username });
+      await setDoc(userRef, newUserDoc(username, credential.user.email));
     }
     return credential;
   };

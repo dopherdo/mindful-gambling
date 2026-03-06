@@ -1,0 +1,249 @@
+.ach-page {
+  min-height: 100dvh;
+  background: var(--bg-base);
+  padding: 2.5rem 1.5rem 3rem;
+  max-width: 560px;
+  margin: 0 auto;
+  animation: pageEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.ach-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.ach-back {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 400;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0.4rem 0;
+  transition: color 0.2s;
+}
+
+.ach-back:hover {
+  color: var(--text-primary);
+}
+
+.ach-title {
+  font-size: clamp(1.2rem, 4vw, 1.5rem);
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.04em;
+  margin: 0;
+}
+
+.ach-loading,
+.ach-empty {
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 4rem;
+  font-size: 0.85rem;
+}
+
+/* ── Rank card ───────────────────────────────────────────────────────────── */
+.ach-rank-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.25rem 1rem;
+  margin-bottom: 2rem;
+}
+
+.ach-rank-top {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.ach-rank-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--bg-base);
+}
+
+.ach-rank-name {
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ach-rank-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.ach-rank-pct {
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-family: 'Roboto Mono', monospace;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.ach-rank-sub {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* ── Progress bars ───────────────────────────────────────────────────────── */
+.ach-bar-track {
+  height: 4px;
+  background: var(--bg-base);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.ach-bar-sm {
+  height: 3px;
+  margin-bottom: 0.6rem;
+}
+
+.ach-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--text-secondary);
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 0;
+}
+
+/* ── Game sections ───────────────────────────────────────────────────────── */
+.ach-game-section {
+  margin-bottom: 2rem;
+}
+
+.ach-game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.4rem;
+}
+
+.ach-game-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.ach-game-count {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  font-family: 'Roboto Mono', monospace;
+}
+
+/* ── Category sections ───────────────────────────────────────────────────── */
+.ach-category {
+  margin-bottom: 1rem;
+  margin-top: 0.75rem;
+}
+
+.ach-cat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.4rem;
+}
+
+.ach-cat-title {
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.ach-cat-count {
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  font-family: 'Roboto Mono', monospace;
+}
+
+/* ── Achievement list ────────────────────────────────────────────────────── */
+.ach-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--border-dim);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.ach-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.85rem;
+  background: var(--bg-surface);
+  transition: background 0.2s ease;
+}
+
+.ach-item:hover {
+  background: var(--bg-elevated);
+}
+
+.ach-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.ach-done .ach-icon {
+  background: rgba(61, 170, 110, 0.12);
+  color: #3DAA6E;
+}
+
+.ach-locked .ach-icon {
+  background: var(--bg-base);
+  color: var(--text-muted);
+}
+
+.ach-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow: hidden;
+}
+
+.ach-item-title {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.ach-locked .ach-item-title {
+  color: var(--text-secondary);
+}
+
+.ach-item-desc {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

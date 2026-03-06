@@ -2,8 +2,52 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{userId} {
+      // Anyone authenticated can read any user (needed for leaderboard)
       allow read: if request.auth != null;
-      allow write: if request.auth != null && request.auth.uid == userId;
+
+      // Only the doc owner can write, with field-level restrictions
+      allow create: if request.auth != null
+                    && request.auth.uid == userId
+                    && isValidNewUser();
+
+      allow update: if request.auth != null
+                    && request.auth.uid == userId
+                    && isValidUpdate();
     }
+  }
+
+  // ── Validation helpers ──────────────────────────────────────────────────────
+
+  // New user document must have valid structure
+  function isValidNewUser() {
+    let data = request.resource.data;
+    return data.keys().hasAll(['username', 'email', 'balance', 'globalStats', 'mindfulStats', 'counterStats'])
+        && data.balance == 100
+        && data.chips == 500
+        && data.username is string
+        && data.username.size() >= 3
+        && data.username.size() <= 30;
+  }
+
+  // Updates can only modify allowed fields, not directly set balance/chips to arbitrary values
+  function isValidUpdate() {
+    let diff = request.resource.data.diff(resource.data);
+    let affectedKeys = diff.affectedKeys();
+
+    // These are the only top-level keys that can change
+    let allowedKeys = ['username', 'balance', 'chips', 'globalStats', 'mindfulStats', 'counterStats', 'lastUpdated'];
+    let allAllowed = affectedKeys.hasOnly(allowedKeys.toSet());
+
+    // Prevent negative balance
+    let balanceValid = !affectedKeys.hasAny(['balance'].toSet())
+                    || request.resource.data.balance >= 0;
+
+    // Username changes must still be valid
+    let usernameValid = !affectedKeys.hasAny(['username'].toSet())
+                     || (request.resource.data.username is string
+                         && request.resource.data.username.size() >= 3
+                         && request.resource.data.username.size() <= 30);
+
+    return allAllowed && balanceValid && usernameValid;
   }
 }

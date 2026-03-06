@@ -69,6 +69,7 @@ const Blackjack = () => {
   const [results, setResults] = useState([]);
   const [showDealerTotal, setShowDealerTotal] = useState(false);
   const [lastBet, setLastBet] = useState(0);
+  const [showLowBal, setShowLowBal] = useState(false);
 
   // Refs for stale-closure-free async access
   const deckRef = useRef([]);
@@ -144,6 +145,7 @@ const Blackjack = () => {
     setResults(res);
     setPhase("gameover");
     setBusyBoth(false);
+    if (balRef.current < 11) setShowLowBal(true);
   };
 
   // ── Advance hand ──────────────────────────────────────────────────────────
@@ -245,6 +247,7 @@ const Blackjack = () => {
       setResults([res]);
       setPhase("gameover");
       setBusyBoth(false);
+      if (balRef.current + payout < 11) setShowLowBal(true);
       return;
     }
 
@@ -485,6 +488,20 @@ const Blackjack = () => {
                 </button>
               </div>
             )}
+          </div>
+        </div>
+      )}
+      {showLowBal && (
+        <div className="lowbal-overlay" onClick={() => setShowLowBal(false)}>
+          <div className="lowbal-popup" onClick={(e) => e.stopPropagation()}>
+            <p className="lowbal-text">Running low on Conscious Cash</p>
+            <p className="lowbal-sub">Watch a short mindful video to earn +$10</p>
+            <button className="lowbal-watch" onClick={() => navigate("/mindful/video")}>
+              Watch Mindful Video
+            </button>
+            <button className="lowbal-dismiss" onClick={() => setShowLowBal(false)}>
+              No Thanks
+            </button>
           </div>
         </div>
       )}

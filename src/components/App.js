@@ -11,6 +11,7 @@ import AuthPage from "./Auth/AuthPage";
 import Leaderboard from "./Leaderboard/Leaderboard";
 import Profile from "./Profile/Profile";
 import CardCounter from "./CardCounter/CardCounter";
+import Achievements from "./Achievements/Achievements";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/achievements" element={<Achievements />} />
           </Routes>
         </Router>
       </BalanceProvider>

@@ -82,6 +82,12 @@
   border-color: var(--border-default);
 }
 
+.profile-edit-error {
+  color: #BF6B6B;
+  font-size: 0.75rem;
+  margin: 0;
+}
+
 .profile-edit-actions {
   display: flex;
   gap: 0.4rem;

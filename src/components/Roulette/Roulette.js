@@ -17,6 +17,7 @@ const Roulette = () => {
     const [betAmount, setBetAmount] = useState(10);
     const [result, setResult] = useState(null);
     const [outcome, setOutcome] = useState("");
+    const [showLowBal, setShowLowBal] = useState(false);
 
     const placeBet = (type) => {
         if (betAmount > balance) {
@@ -70,6 +71,10 @@ const Roulette = () => {
                 updateStats(currentUser.uid, "roulette", { won: false, wagered: betAmount, profit: 0 });
             }
         }
+
+        // Check after spin resolves — balance was already deducted in placeBet
+        const currentBal = win ? balance + betAmount * (betType === 'number' ? 35 : 2) : balance;
+        if (currentBal < 11) setShowLowBal(true);
     };
 
     return (
@@ -112,8 +117,23 @@ const Roulette = () => {
             <button onClick={spinWheel} className="spin-button">Spin Wheel</button>
             <div className="wheel-result">{result}</div>
             <h2>{outcome}</h2>
-            
+
             <button className="back-button" onClick={() => navigate("/mindful")}>Back to Home</button>
+
+            {showLowBal && (
+                <div className="lowbal-overlay" onClick={() => setShowLowBal(false)}>
+                    <div className="lowbal-popup" onClick={(e) => e.stopPropagation()}>
+                        <p className="lowbal-text">Running low on Conscious Cash</p>
+                        <p className="lowbal-sub">Watch a short mindful video to earn +$10</p>
+                        <button className="lowbal-watch" onClick={() => navigate("/mindful/video")}>
+                            Watch Mindful Video
+                        </button>
+                        <button className="lowbal-dismiss" onClick={() => setShowLowBal(false)}>
+                            No Thanks
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

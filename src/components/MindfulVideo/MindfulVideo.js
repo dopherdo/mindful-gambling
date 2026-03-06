@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./MindfulVideo.css";
 import { BalanceContext } from "../../context/BalanceContext";
 import { useAuth } from "../../context/AuthContext";
+import { GAMES } from "../../config/gameNames";
 import { incrementVideosWatched } from "../../utils/statsHelpers";
 import ConsciousCash from "../ConsciousCash/ConsciousCash";
 
@@ -100,7 +101,7 @@ const MindfulVideo = () => {
 
   return (
     <div className="video-page">
-      <h2>Watch This Mindful Gambling Awareness Video</h2>
+      <h2>Watch This {GAMES.mindful.name} Awareness Video</h2>
       {/* Balance Section */}
       <div className="balance-section">
         <ConsciousCash />
@@ -108,7 +109,7 @@ const MindfulVideo = () => {
 
       {videoId ? (
         <iframe
-          title="Mindful Gambling Video"
+          title={`${GAMES.mindful.name} Video`}
           className="video-iframe"
           src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&enablejsapi=1&disablekb=1&modestbranding=1`}
           frameBorder="0"

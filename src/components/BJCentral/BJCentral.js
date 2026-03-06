@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { APP_NAME, GAMES } from "../../config/gameNames";
 import "./BJCentral.css";
 
 const BJCentral = () => {
@@ -12,7 +13,6 @@ const BJCentral = () => {
 
   // Auth form state
   const [mode, setMode] = useState("login");
-  const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,7 +51,7 @@ const BJCentral = () => {
     setLoading(true);
     try {
       if (mode === "register") {
-        await register(email, password, displayName, username.trim().toLowerCase());
+        await register(email, password, username.trim().toLowerCase());
       } else {
         await login(email, password);
       }
@@ -89,7 +89,7 @@ const BJCentral = () => {
       <div className="bjcentral-topbar">
         <div className="bjcentral-topbar-right">
           {currentUser ? (
-            <button className="profile-icon-btn" onClick={() => navigate("/profile")} title={currentUser.displayName || "Profile"}>
+            <button className="profile-icon-btn" onClick={() => navigate("/profile")} title="Profile">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
               </svg>
@@ -103,21 +103,25 @@ const BJCentral = () => {
       </div>
 
       <div className="bjcentral-hero">
-        <h1 className="bjcentral-title">BJ Central</h1>
+        <h1 className="bjcentral-title">{APP_NAME}</h1>
         <p className="bjcentral-sub">Your blackjack hub</p>
       </div>
 
       <div className="bjcentral-modes">
-        <button className="mode-card" onClick={() => navigate("/card-counter")}>
-          <h2 className="mode-title">Card Counter Trainer</h2>
-          <p className="mode-desc">Practice hi-lo counting and sharpen your edge.</p>
+        <button className="mode-card" onClick={() => navigate(GAMES.cardCounter.path)}>
+          <h2 className="mode-title">{GAMES.cardCounter.name}</h2>
+          <p className="mode-desc">{GAMES.cardCounter.desc}</p>
         </button>
 
-        <button className="mode-card" onClick={() => navigate("/mindful")}>
-          <h2 className="mode-title">Mindful Gambling</h2>
-          <p className="mode-desc">Play with awareness. Break the chase cycle.</p>
+        <button className="mode-card" onClick={() => navigate(GAMES.mindful.path)}>
+          <h2 className="mode-title">{GAMES.mindful.name}</h2>
+          <p className="mode-desc">{GAMES.mindful.desc}</p>
         </button>
       </div>
+
+      <button className="bjcentral-achievements" onClick={() => navigate("/achievements")}>
+        Achievements
+      </button>
 
       {/* ── Sign-in popup ────────────────────────────────────────────────── */}
       {popup === "signin" && (
@@ -129,7 +133,7 @@ const BJCentral = () => {
               </svg>
             </button>
 
-            <h2 className="bjc-popup-title">Welcome to BJ Central</h2>
+            <h2 className="bjc-popup-title">Welcome to {APP_NAME}</h2>
             <p className="bjc-popup-sub">Sign in to track your stats and compete</p>
 
             <div className="bjc-auth-tabs">
@@ -149,25 +153,15 @@ const BJCentral = () => {
 
             <form onSubmit={handleSubmit} className="bjc-auth-form">
               {mode === "register" && (
-                <>
-                  <input
-                    className="bjc-auth-input"
-                    type="text"
-                    placeholder="Display name"
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    required
-                  />
-                  <input
-                    className="bjc-auth-input"
-                    type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                    autoComplete="off"
-                  />
-                </>
+                <input
+                  className="bjc-auth-input"
+                  type="text"
+                  placeholder="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  autoComplete="off"
+                />
               )}
               <input
                 className="bjc-auth-input"

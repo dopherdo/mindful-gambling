@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Homepage.css";
 import { useAuth } from "../../context/AuthContext";
+import { GAMES } from "../../config/gameNames";
 import ConsciousCash from "../ConsciousCash/ConsciousCash";
 import BJCentralBack from "../BJCentralBack/BJCentralBack";
 
@@ -63,7 +64,7 @@ const Homepage = () => {
 
       <div className="homepage-hero">
         <h2 className="info-text">Make every bet a mindful one.</h2>
-        <h1 className="home-title">Mindful Gambling</h1>
+        <h1 className="home-title">{GAMES.mindful.name}</h1>
       </div>
 
       <div className="game-options">
@@ -88,7 +89,7 @@ const Homepage = () => {
               </svg>
             </button>
 
-            <h2 className="modal-title">Why Mindful Gambling?</h2>
+            <h2 className="modal-title">Why {GAMES.mindful.name}?</h2>
 
             <p className="modal-body">
               This app is built around a simple truth: the most dangerous moment in gambling

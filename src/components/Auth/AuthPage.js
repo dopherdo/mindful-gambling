@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { APP_NAME } from "../../config/gameNames";
 import "./AuthPage.css";
 
 const AuthPage = () => {
   const navigate = useNavigate();
   const { login, register, loginWithGoogle } = useAuth();
   const [mode, setMode] = useState("login");
-  const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,7 +36,7 @@ const AuthPage = () => {
     setLoading(true);
     try {
       if (mode === "register") {
-        await register(email, password, displayName, username.trim().toLowerCase());
+        await register(email, password, username.trim().toLowerCase());
       } else {
         await login(email, password);
       }
@@ -83,7 +83,7 @@ const AuthPage = () => {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1 className="auth-title">BJ Central</h1>
+        <h1 className="auth-title">{APP_NAME}</h1>
         <p className="auth-subtitle">Sign in to track your stats</p>
 
         <div className="auth-tabs">
@@ -103,25 +103,15 @@ const AuthPage = () => {
 
         <form onSubmit={handleSubmit} className="auth-form">
           {mode === "register" && (
-            <>
-              <input
-                className="auth-input"
-                type="text"
-                placeholder="Display name"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                required
-              />
-              <input
-                className="auth-input"
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                autoComplete="off"
-              />
-            </>
+            <input
+              className="auth-input"
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              autoComplete="off"
+            />
           )}
           <input
             className="auth-input"

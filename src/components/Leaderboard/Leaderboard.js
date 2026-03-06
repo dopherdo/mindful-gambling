@@ -51,11 +51,10 @@ const Leaderboard = () => {
             >
               <span className="col-rank">{getRankDisplay(i)}</span>
               <span className="col-name">
-                <span className="player-display">{player.displayName || "Anonymous"}</span>
-                {player.username && <span className="player-username">@{player.username}</span>}
+                <span className="player-display">@{player.username || "anonymous"}</span>
               </span>
               <span className="col-balance">${player.balance ?? 0}</span>
-              <span className="col-wins">{player.stats?.totalWins ?? 0}</span>
+              <span className="col-wins">{player.mindfulStats?.totalWins ?? 0}</span>
             </div>
           ))}
         </div>
