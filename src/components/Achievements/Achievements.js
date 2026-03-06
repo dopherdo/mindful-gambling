@@ -39,10 +39,21 @@ const Achievements = () => {
     );
   }
 
+  const oldStats = userData.stats || {};
   const data = {
-    globalStats: userData.globalStats || {},
-    mindfulStats: userData.mindfulStats || {},
-    counterStats: userData.counterStats || {},
+    globalStats: {
+      totalGamesPlayed: (userData.globalStats || {}).totalGamesPlayed ?? oldStats.totalGamesPlayed ?? 0,
+      videosWatched: (userData.globalStats || {}).videosWatched ?? oldStats.videosWatched ?? 0,
+    },
+    mindfulStats: {
+      blackjackGames: (userData.mindfulStats || {}).blackjackGames ?? oldStats.blackjackGames ?? 0,
+      rouletteGames: (userData.mindfulStats || {}).rouletteGames ?? oldStats.rouletteGames ?? 0,
+      totalWins: (userData.mindfulStats || {}).totalWins ?? oldStats.totalWins ?? 0,
+      totalLosses: (userData.mindfulStats || {}).totalLosses ?? oldStats.totalLosses ?? 0,
+      biggestWin: (userData.mindfulStats || {}).biggestWin ?? oldStats.biggestWin ?? 0,
+      totalWagered: (userData.mindfulStats || {}).totalWagered ?? oldStats.totalWagered ?? 0,
+    },
+    counterStats: userData.counterStats || userData.ccStats || {},
     balance: userData.balance ?? 0,
   };
 

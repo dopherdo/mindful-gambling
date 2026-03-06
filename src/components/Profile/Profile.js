@@ -50,12 +50,24 @@ const Profile = () => {
 
   if (!userData) return <div className="profile-page"><p className="profile-loading">Loading...</p></div>;
 
+  const oldStats = userData.stats || {};
   const globalStats = userData.globalStats || {};
   const mindfulStats = userData.mindfulStats || {};
-  const counterStats = userData.counterStats || {};
-  const totalGames = globalStats.totalGamesPlayed ?? 0;
+  const counterStats = userData.counterStats || userData.ccStats || {};
+
+  // Fallback: merge old stats into new if migration hasn't run
+  const gs = { totalGamesPlayed: globalStats.totalGamesPlayed ?? oldStats.totalGamesPlayed ?? 0, videosWatched: globalStats.videosWatched ?? oldStats.videosWatched ?? 0 };
+  const ms = {
+    totalWins: mindfulStats.totalWins ?? oldStats.totalWins ?? 0,
+    totalLosses: mindfulStats.totalLosses ?? oldStats.totalLosses ?? 0,
+    biggestWin: mindfulStats.biggestWin ?? oldStats.biggestWin ?? 0,
+    totalWagered: mindfulStats.totalWagered ?? oldStats.totalWagered ?? 0,
+    blackjackGames: mindfulStats.blackjackGames ?? oldStats.blackjackGames ?? 0,
+    rouletteGames: mindfulStats.rouletteGames ?? oldStats.rouletteGames ?? 0,
+  };
+  const totalGames = gs.totalGamesPlayed;
   const winRate = totalGames > 0
-    ? Math.round(((mindfulStats.totalWins ?? 0) / totalGames) * 100)
+    ? Math.round((ms.totalWins / totalGames) * 100)
     : 0;
 
   return (
@@ -84,9 +96,12 @@ const Profile = () => {
         ) : (
           <>
             <div className="profile-name-row">
-              <h1 className="profile-name">@{userData.username || "anonymous"}</h1>
-              <button className="edit-button" onClick={() => { setNewUsername(userData.username || ""); setEditing(true); }}>
-                Edit
+              <h1 className="profile-name">{userData.username || userData.displayName || "anonymous"}</h1>
+              <button className="edit-button" onClick={() => { setNewUsername(userData.username || ""); setEditing(true); }} aria-label="Edit username">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17 3a2.85 2.85 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                  <path d="m15 5 4 4"/>
+                </svg>
               </button>
             </div>
             <p className="profile-email">{userData.email}</p>
@@ -104,11 +119,11 @@ const Profile = () => {
           <span className="stat-label">Games Played</span>
         </div>
         <div className="stat-card">
-          <span className="stat-value">{mindfulStats.totalWins ?? 0}</span>
+          <span className="stat-value">{ms.totalWins}</span>
           <span className="stat-label">Wins</span>
         </div>
         <div className="stat-card">
-          <span className="stat-value">{mindfulStats.totalLosses ?? 0}</span>
+          <span className="stat-value">{ms.totalLosses}</span>
           <span className="stat-label">Losses</span>
         </div>
         <div className="stat-card">
@@ -116,23 +131,23 @@ const Profile = () => {
           <span className="stat-label">Win Rate</span>
         </div>
         <div className="stat-card">
-          <span className="stat-value">${mindfulStats.biggestWin ?? 0}</span>
+          <span className="stat-value">${ms.biggestWin}</span>
           <span className="stat-label">Biggest Win</span>
         </div>
         <div className="stat-card">
-          <span className="stat-value">${mindfulStats.totalWagered ?? 0}</span>
+          <span className="stat-value">${ms.totalWagered}</span>
           <span className="stat-label">Total Wagered</span>
         </div>
         <div className="stat-card">
-          <span className="stat-value">{globalStats.videosWatched ?? 0}</span>
+          <span className="stat-value">{gs.videosWatched}</span>
           <span className="stat-label">Videos Watched</span>
         </div>
         <div className="stat-card">
-          <span className="stat-value">{mindfulStats.blackjackGames ?? 0}</span>
+          <span className="stat-value">{ms.blackjackGames}</span>
           <span className="stat-label">Blackjack Games</span>
         </div>
         <div className="stat-card">
-          <span className="stat-value">{mindfulStats.rouletteGames ?? 0}</span>
+          <span className="stat-value">{ms.rouletteGames}</span>
           <span className="stat-label">Roulette Games</span>
         </div>
         <div className="stat-card">

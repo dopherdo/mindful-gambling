@@ -94,7 +94,18 @@
 }
 
 /* ── Buttons ─────────────────────────────────────────────────────────────── */
-.edit-button,
+.edit-button {
+  background: transparent;
+  border: none;
+  padding: 4px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .save-button,
 .cancel-button {
   background: var(--bg-elevated);
@@ -109,7 +120,10 @@
   transition: all 0.2s ease;
 }
 
-.edit-button:hover,
+.edit-button:hover {
+  color: var(--text-primary);
+}
+
 .save-button:hover,
 .cancel-button:hover {
   background: var(--bg-active);

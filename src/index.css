@@ -40,7 +40,6 @@
 html, body {
   margin: 0;
   height: 100%;
-  overflow: hidden;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -58,14 +57,14 @@ html, body {
   background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
   color: var(--text-primary);
-  font-size: 12px;
-  font-weight: 400;
-  font-family: inherit;
-  letter-spacing: 0.01em;
-  padding: 6px 12px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  white-space: nowrap;
   transition: all 0.25s ease;
   z-index: 10;
 }
@@ -73,6 +72,7 @@ html, body {
 .bj-central-back:hover {
   background: var(--bg-active);
   border-color: var(--border-default);
+  color: var(--text-primary);
 }
 
 .profile-icon-btn {
