@@ -10,6 +10,7 @@
 
 #ignore env private keys
 .env
+scripts/serviceAccountKey.json
 
 # production
 /build
