@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { APP_NAME, GAMES } from "../../config/gameNames";
+import Logo from "../Logo/Logo";
 import "./BJCentral.css";
 
 const BJCentral = () => {
@@ -103,6 +104,7 @@ const BJCentral = () => {
       </div>
 
       <div className="bjcentral-hero">
+        <Logo size={72} animate />
         <h1 className="bjcentral-title">{APP_NAME}</h1>
         <p className="bjcentral-sub">Your blackjack hub</p>
       </div>
