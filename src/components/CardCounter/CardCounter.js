@@ -1,49 +1,19 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebase";
 import { GAMES } from "../../config/gameNames";
+import { buildShoe, isRed, hiLoValue, hiLoLabel } from "../../utils/deckUtils";
 import "./CardCounter.css";
 import BJCentralBack from "../BJCentralBack/BJCentralBack";
-
-// ─── Deck utilities ─────────────────────────────────────────────────────────
-let _id = 0;
-const uid = () => ++_id;
-
-const SUITS = ["\u2660", "\u2665", "\u2666", "\u2663"];
-const RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
-
-const buildShoe = (deckCount) => {
-  const shoe = [];
-  for (let d = 0; d < deckCount; d++)
-    for (const suit of SUITS)
-      for (const rank of RANKS)
-        shoe.push({ id: uid(), suit, rank });
-  // Fisher-Yates shuffle
-  for (let i = shoe.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shoe[i], shoe[j]] = [shoe[j], shoe[i]];
-  }
-  return shoe;
-};
-
-// Hi-Lo values
-const hiLoValue = (rank) => {
-  if (["2","3","4","5","6"].includes(rank)) return 1;
-  if (["7","8","9"].includes(rank)) return 0;
-  return -1; // 10, J, Q, K, A
-};
-
-const hiLoLabel = (rank) => {
-  const v = hiLoValue(rank);
-  return v > 0 ? "+1" : v < 0 ? "-1" : "0";
-};
+import Tutorial from "./Tutorial";
+import GameSimulator from "./GameSimulator";
 
 // ─── Card component (pure B&W) ─────────────────────────────────────────────
 const Card = ({ card, revealed }) => {
   if (!card) return null;
-  const red = card.suit === "\u2665" || card.suit === "\u2666";
+  const red = isRed(card);
   return (
     <div className={`cc-card ${revealed ? "cc-card-revealed" : ""}`}>
       <div className={`cc-card-inner ${red ? "cc-card-red" : "cc-card-black"}`}>
@@ -64,11 +34,24 @@ const CardCounter = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
 
-  // Setup state
-  const [phase, setPhase] = useState("setup"); // setup | playing | review | done
+  // Tutorial state
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  // Check if first visit
+  useEffect(() => {
+    const hasSeenTutorial = localStorage.getItem("cc-tutorial-seen");
+    if (!hasSeenTutorial) {
+      setShowTutorial(true);
+      localStorage.setItem("cc-tutorial-seen", "1");
+    }
+  }, []);
+
+  // Mode & setup state
+  const [mode, setMode] = useState(null); // null | "trainer" | "simulator"
+  const [phase, setPhase] = useState("setup"); // setup | playing | done
   const [deckCount, setDeckCount] = useState(null);
 
-  // Game state
+  // ── Count Trainer state ────────────────────────────────────────────────
   const shoeRef = useRef([]);
   const [currentCard, setCurrentCard] = useState(null);
   const [, setDealtCards] = useState([]);
@@ -87,8 +70,6 @@ const CardCounter = () => {
   const [lastCorrect, setLastCorrect] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
 
-  // Weighted accuracy: correct decisions / total, but weighted so that
-  // a perfect player trends to ~95% and a random guesser trends to ~33%
   const getAccuracy = useCallback(() => {
     if (totalDecisions === 0) return 0;
     return Math.round((correctCount / totalDecisions) * 100);
@@ -102,7 +83,7 @@ const CardCounter = () => {
     return "#BF6B6B";
   }, [getAccuracy]);
 
-  // ── Start session ─────────────────────────────────────────────────────────
+  // ── Start count trainer session ────────────────────────────────────────
   const startSession = (decks) => {
     setDeckCount(decks);
     const shoe = buildShoe(decks);
@@ -122,7 +103,7 @@ const CardCounter = () => {
     dealNext(shoe, 0, 0, decks);
   };
 
-  // ── Deal next card ────────────────────────────────────────────────────────
+  // ── Deal next card ────────────────────────────────────────────────────
   const dealNext = (shoe, dealt, rc, decks) => {
     if (shoe.length === 0) {
       setPhase("done");
@@ -133,7 +114,6 @@ const CardCounter = () => {
     setCurrentCard(card);
     setCardsDealt(dealt + 1);
 
-    // Calculate what the true count will be after this card
     const newRc = rc + hiLoValue(card.rank);
     const decksRemaining = Math.max((shoe.length) / 52, 0.5);
     const tc = Math.round((newRc / decksRemaining) * 10) / 10;
@@ -142,7 +122,7 @@ const CardCounter = () => {
     setLastCorrect(null);
   };
 
-  // ── Handle user's count decision ──────────────────────────────────────────
+  // ── Handle user's count decision ──────────────────────────────────────
   const handleDecision = (userAnswer) => {
     if (showResult) return;
 
@@ -170,18 +150,16 @@ const CardCounter = () => {
     setDealtCards(prev => [...prev, card]);
   };
 
-  // ── Advance to next card ──────────────────────────────────────────────────
   const nextCard = () => {
     dealNext(shoeRef.current, cardsDealt, runningCount, deckCount);
   };
 
-  // ── End session early ─────────────────────────────────────────────────────
   const endSession = () => {
     setPhase("done");
     syncStats();
   };
 
-  // ── Sync stats to Firestore ───────────────────────────────────────────────
+  // ── Sync stats to Firestore ───────────────────────────────────────────
   const syncStats = async () => {
     if (!currentUser) return;
     try {
@@ -196,11 +174,13 @@ const CardCounter = () => {
     }
   };
 
-  // ── Penetration indicator ─────────────────────────────────────────────────
+  // ── Penetration indicator ─────────────────────────────────────────────
   const penetration = totalCards > 0 ? (cardsDealt / totalCards) * 100 : 0;
   const decksRemaining = totalCards > 0 ? Math.max((totalCards - cardsDealt) / 52, 0) : 0;
 
-  // ── Render: Setup ─────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════
+  //  RENDER: SETUP (Mode Selection + Deck Selection)
+  // ═══════════════════════════════════════════════════════════════════════
   if (phase === "setup") {
     return (
       <div className="cc-page">
@@ -213,51 +193,147 @@ const CardCounter = () => {
           </button>
         )}
 
+        {/* Tutorial overlay */}
+        {showTutorial && <Tutorial onClose={() => setShowTutorial(false)} />}
+
         <div className="cc-setup">
           <h1 className="cc-title">{GAMES.cardCounter.name}</h1>
           <p className="cc-subtitle">Hi-Lo Counting Trainer</p>
 
-          <div className="cc-info-card">
-            <h3 className="cc-info-heading">How it works</h3>
-            <p className="cc-info-text">
-              Cards are dealt one at a time. For each card, identify whether it adds +1, 0, or -1
-              to the running count using the Hi-Lo system.
-            </p>
-            <div className="cc-hilo-guide">
-              <div className="cc-guide-row">
-                <span className="cc-guide-cards">2-6</span>
-                <span className="cc-guide-value hilo-pos">+1</span>
-              </div>
-              <div className="cc-guide-row">
-                <span className="cc-guide-cards">7-9</span>
-                <span className="cc-guide-value hilo-zero">0</span>
-              </div>
-              <div className="cc-guide-row">
-                <span className="cc-guide-cards">10-A</span>
-                <span className="cc-guide-value hilo-neg">-1</span>
-              </div>
-            </div>
-          </div>
+          {/* Tutorial button */}
+          <button className="cc-tutorial-btn" onClick={() => setShowTutorial(true)}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+            How to Count Cards
+          </button>
 
-          <p className="cc-choose-label">Choose your shoe</p>
-          <div className="cc-deck-options">
-            <button className="cc-deck-btn" onClick={() => startSession(2)}>
-              <span className="cc-deck-count">2</span>
-              <span className="cc-deck-label">Deck Shoe</span>
-              <span className="cc-deck-cards">104 cards</span>
-            </button>
-            <button className="cc-deck-btn" onClick={() => startSession(6)}>
-              <span className="cc-deck-count">6</span>
-              <span className="cc-deck-label">Deck Shoe</span>
-              <span className="cc-deck-cards">312 cards</span>
-            </button>
-          </div>
+          {!mode ? (
+            <>
+              {/* Mode Selection */}
+              <p className="cc-choose-label">Choose your mode</p>
+              <div className="cc-mode-options">
+                <button className="cc-mode-btn" onClick={() => setMode("trainer")}>
+                  <div className="cc-mode-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                      <rect x="2" y="4" width="20" height="16" rx="2"/>
+                      <path d="M12 8v4M10 10h4"/>
+                    </svg>
+                  </div>
+                  <span className="cc-mode-name">Count Trainer</span>
+                  <span className="cc-mode-desc">Cards dealt one at a time. Practice identifying Hi-Lo values.</span>
+                </button>
+                <button className="cc-mode-btn" onClick={() => setMode("simulator")}>
+                  <div className="cc-mode-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                      <rect x="1" y="5" width="9" height="14" rx="1.5"/>
+                      <rect x="14" y="5" width="9" height="14" rx="1.5"/>
+                      <circle cx="12" cy="20" r="1"/>
+                    </svg>
+                  </div>
+                  <span className="cc-mode-name">Game Simulator</span>
+                  <span className="cc-mode-desc">Play simulated blackjack. Practice counting while making real decisions.</span>
+                </button>
+              </div>
+            </>
+          ) : mode === "trainer" ? (
+            <>
+              {/* Count Trainer — Deck selection */}
+              <div className="cc-info-card">
+                <h3 className="cc-info-heading">How it works</h3>
+                <p className="cc-info-text">
+                  Cards are dealt one at a time. For each card, identify whether it adds +1, 0, or -1
+                  to the running count using the Hi-Lo system.
+                </p>
+                <div className="cc-hilo-guide">
+                  <div className="cc-guide-row">
+                    <span className="cc-guide-cards">2-6</span>
+                    <span className="cc-guide-value hilo-pos">+1</span>
+                  </div>
+                  <div className="cc-guide-row">
+                    <span className="cc-guide-cards">7-9</span>
+                    <span className="cc-guide-value hilo-zero">0</span>
+                  </div>
+                  <div className="cc-guide-row">
+                    <span className="cc-guide-cards">10-A</span>
+                    <span className="cc-guide-value hilo-neg">-1</span>
+                  </div>
+                </div>
+              </div>
+
+              <p className="cc-choose-label">Choose your shoe</p>
+              <div className="cc-deck-options">
+                <button className="cc-deck-btn" onClick={() => startSession(2)}>
+                  <span className="cc-deck-count">2</span>
+                  <span className="cc-deck-label">Deck Shoe</span>
+                  <span className="cc-deck-cards">104 cards</span>
+                </button>
+                <button className="cc-deck-btn" onClick={() => startSession(6)}>
+                  <span className="cc-deck-count">6</span>
+                  <span className="cc-deck-label">Deck Shoe</span>
+                  <span className="cc-deck-cards">312 cards</span>
+                </button>
+              </div>
+
+              <button className="cc-back-mode-btn" onClick={() => setMode(null)}>
+                ← Choose mode
+              </button>
+            </>
+          ) : (
+            <>
+              {/* Game Simulator — Deck selection */}
+              <div className="cc-info-card">
+                <h3 className="cc-info-heading">Game Simulator</h3>
+                <p className="cc-info-text">
+                  Play simulated blackjack hands while maintaining the count.
+                  You'll be tested on your true count between rounds and your
+                  playing decisions are tracked against basic strategy.
+                </p>
+              </div>
+
+              <p className="cc-choose-label">Choose your shoe</p>
+              <div className="cc-deck-options">
+                <button className="cc-deck-btn" onClick={() => { setDeckCount(2); setPhase("simulator"); }}>
+                  <span className="cc-deck-count">2</span>
+                  <span className="cc-deck-label">Deck Shoe</span>
+                  <span className="cc-deck-cards">104 cards</span>
+                </button>
+                <button className="cc-deck-btn" onClick={() => { setDeckCount(6); setPhase("simulator"); }}>
+                  <span className="cc-deck-count">6</span>
+                  <span className="cc-deck-label">Deck Shoe</span>
+                  <span className="cc-deck-cards">312 cards</span>
+                </button>
+              </div>
+
+              <button className="cc-back-mode-btn" onClick={() => setMode(null)}>
+                ← Choose mode
+              </button>
+            </>
+          )}
         </div>
       </div>
     );
   }
 
-  // ── Render: Done ──────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════
+  //  RENDER: GAME SIMULATOR
+  // ═══════════════════════════════════════════════════════════════════════
+  if (phase === "simulator") {
+    return (
+      <div className="cc-page">
+        <GameSimulator
+          deckCount={deckCount}
+          onEnd={() => { setPhase("setup"); setMode(null); }}
+          onBack={() => { setPhase("setup"); setMode("simulator"); }}
+        />
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  //  RENDER: DONE (Count Trainer)
+  // ═══════════════════════════════════════════════════════════════════════
   if (phase === "done") {
     const acc = getAccuracy();
     return (
@@ -296,8 +372,11 @@ const CardCounter = () => {
             <button className="cc-play-again" onClick={() => startSession(deckCount)}>
               Play Again
             </button>
-            <button className="cc-change-deck" onClick={() => setPhase("setup")}>
+            <button className="cc-change-deck" onClick={() => { setPhase("setup"); setMode("trainer"); }}>
               Change Shoe
+            </button>
+            <button className="cc-change-deck" onClick={() => { setPhase("setup"); setMode(null); }}>
+              Change Mode
             </button>
             <button className="cc-back-btn" onClick={() => navigate("/")}>
               Back
@@ -308,7 +387,9 @@ const CardCounter = () => {
     );
   }
 
-  // ── Render: Playing ───────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════
+  //  RENDER: PLAYING (Count Trainer)
+  // ═══════════════════════════════════════════════════════════════════════
   return (
     <div className="cc-page">
       {/* Top bar */}

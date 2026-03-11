@@ -58,6 +58,99 @@
   margin: 0;
 }
 
+/* Tutorial button */
+.cc-tutorial-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 8px 14px;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.72rem;
+  font-weight: 400;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 0.25rem;
+}
+
+.cc-tutorial-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Mode selection */
+.cc-mode-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.cc-mode-btn {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border: none;
+  padding: 1.15rem 1.25rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  transition: background 0.25s ease;
+  font-family: inherit;
+  text-align: left;
+}
+
+.cc-mode-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cc-mode-icon {
+  color: rgba(255, 255, 255, 0.25);
+  margin-bottom: 2px;
+}
+
+.cc-mode-btn:hover .cc-mode-icon {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.cc-mode-name {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.cc-mode-desc {
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.25);
+  line-height: 1.5;
+}
+
+/* Back to mode selection */
+.cc-back-mode-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.15);
+  font-size: 0.72rem;
+  font-weight: 400;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 8px;
+  transition: color 0.2s;
+  margin-top: 0.25rem;
+}
+
+.cc-back-mode-btn:hover {
+  color: rgba(255, 255, 255, 0.4);
+}
+
 /* Info card */
 .cc-info-card {
   width: 100%;
@@ -82,6 +175,10 @@
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.35);
   margin: 0 0 0.85rem;
+}
+
+.cc-info-text:last-child {
+  margin-bottom: 0;
 }
 
 .cc-hilo-guide {
@@ -179,7 +276,7 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   PLAYING SCREEN
+   PLAYING SCREEN (Count Trainer)
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* Top bar */
@@ -669,6 +766,926 @@
   color: rgba(255, 255, 255, 0.4);
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   TUTORIAL OVERLAY
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.tut-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+  animation: fadeIn 0.2s ease both;
+}
+
+.tut-popup {
+  background: #0a0a0c;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 2rem 1.75rem;
+  max-width: 360px;
+  width: 100%;
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+/* Progress dots */
+.tut-progress {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 1.5rem;
+}
+
+.tut-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  transition: all 0.3s;
+}
+
+.tut-dot-active {
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.tut-dot-done {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Icon */
+.tut-icon {
+  font-size: 1.8rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.6;
+}
+
+/* Title & body */
+.tut-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 0.65rem;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.tut-body {
+  font-size: 0.78rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0 0 1rem;
+  text-align: center;
+}
+
+/* Hi-Lo table in tutorial */
+.tut-hilo-table {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.tut-hilo-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.tut-hilo-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tut-hilo-val {
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: 'Roboto Mono', monospace;
+  min-width: 24px;
+}
+
+.tut-hilo-cards {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.tut-hilo-note {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.2);
+}
+
+/* Formula */
+.tut-formula {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(93, 191, 126, 0.04);
+  border: 1px solid rgba(93, 191, 126, 0.08);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #5DBF7E;
+  text-align: center;
+  font-family: 'Roboto Mono', monospace;
+  margin-bottom: 0.75rem;
+}
+
+/* Example */
+.tut-example {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.tut-example-line {
+  font-size: 0.72rem;
+  font-family: 'Roboto Mono', monospace;
+  color: rgba(255, 255, 255, 0.35);
+  padding: 3px 0;
+}
+
+/* Bet table */
+.tut-bet-table {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.tut-bet-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.tut-bet-tc {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: 'Roboto Mono', monospace;
+}
+
+.tut-bet-amount {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* Deviations */
+.tut-deviations {
+  width: 100%;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 0.5rem;
+}
+
+.tut-deviation {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.35);
+  line-height: 1.5;
+}
+
+/* Modes */
+.tut-modes {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.tut-mode {
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tut-mode-name {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.tut-mode-desc {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.3);
+  line-height: 1.5;
+}
+
+/* Tips in tutorial */
+.tut-tips {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.tut-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.tut-tip-num {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 1px;
+}
+
+.tut-tip-text {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.35);
+  line-height: 1.5;
+}
+
+/* Nav */
+.tut-nav {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+.tut-back {
+  flex: 0 0 auto;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 10px 18px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.82rem;
+  font-weight: 400;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tut-back:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.tut-next {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 18px;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tut-next:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tut-next-final {
+  background: #ffffff;
+  color: #050507;
+  border-color: transparent;
+}
+
+.tut-next-final:hover {
+  opacity: 0.85;
+  background: #ffffff;
+}
+
+.tut-skip {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.12);
+  font-size: 0.68rem;
+  font-weight: 400;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 8px;
+  margin-top: 4px;
+  transition: color 0.2s;
+}
+
+.tut-skip:hover {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GAME SIMULATOR
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.sim-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  min-height: 100dvh;
+  padding: 16px 0;
+  position: relative;
+}
+
+/* Top bar */
+.sim-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 4px;
+  margin-bottom: 8px;
+}
+
+.sim-round-pill {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.sim-bankroll-pill {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+/* Accuracy section */
+.sim-accuracy-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 8px 0 16px;
+}
+
+.sim-accuracy-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.sim-accuracy-name {
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.18);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  min-width: 36px;
+}
+
+/* Count Check */
+.sim-count-check {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: auto 0;
+  padding: 2rem 0;
+}
+
+.sim-cc-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.sim-cc-subtitle {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.2);
+  margin: 0;
+}
+
+.sim-cc-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.sim-cc-input {
+  width: 80px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-family: 'Roboto Mono', monospace;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.sim-cc-input:focus {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.sim-cc-input::placeholder {
+  color: rgba(255, 255, 255, 0.12);
+}
+
+/* Remove spinner for number input */
+.sim-cc-input::-webkit-outer-spin-button,
+.sim-cc-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.sim-cc-input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.sim-cc-submit {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 20px;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sim-cc-submit:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sim-cc-result {
+  font-size: 0.92rem;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 8px;
+  animation: fadeIn 0.15s ease both;
+}
+
+.sim-cc-correct {
+  color: #5DBF7E;
+  background: rgba(93, 191, 126, 0.06);
+}
+
+.sim-cc-wrong {
+  color: #BF6B6B;
+  background: rgba(191, 107, 107, 0.06);
+}
+
+.sim-cc-hint {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.12);
+  margin: 0;
+  font-style: italic;
+}
+
+/* True Count Peek */
+.sim-tc-peek {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 8px 14px;
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 0.68rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.sim-tc-peek:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.sim-tc-value {
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: 'Roboto Mono', monospace;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.sim-tc-peek-mini {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  min-width: auto;
+  padding: 6px 10px;
+}
+
+/* Betting */
+.sim-betting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin: auto 0;
+  padding: 2rem 0;
+}
+
+.sim-bet-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.sim-bet-rec {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 12px 24px;
+  background: rgba(93, 191, 126, 0.03);
+  border: 1px solid rgba(93, 191, 126, 0.06);
+  border-radius: 10px;
+}
+
+.sim-bet-rec-label {
+  font-size: 0.58rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(93, 191, 126, 0.4);
+}
+
+.sim-bet-rec-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #5DBF7E;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.sim-bet-rec-desc {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.sim-bet-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.sim-bet-chip {
+  width: 58px;
+  height: 42px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 500;
+  font-family: 'Roboto Mono', monospace;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sim-bet-chip:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.sim-bet-chip:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+/* Tip */
+.sim-tip {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: auto;
+  margin-bottom: 8px;
+}
+
+.sim-tip-label {
+  font-size: 0.55rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.12);
+}
+
+.sim-tip-text {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.25);
+  line-height: 1.5;
+}
+
+/* Hands */
+.sim-hand-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.sim-hand-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.68rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sim-hand-total {
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.78rem;
+}
+
+.sim-hand-cards {
+  display: flex;
+  gap: 4px;
+}
+
+/* Sim cards */
+.sim-card {
+  width: 56px;
+  height: 78px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  user-select: none;
+  animation: cardDeal 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.sim-card-sm {
+  width: 48px;
+  height: 66px;
+}
+
+.sim-card-red {
+  background: #FAF7F2;
+  color: #C41A1A;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.sim-card-black {
+  background: #FAF7F2;
+  color: #1A1A1A;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.sim-card-back {
+  background: #1a1a2e;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.sim-card-back-pattern {
+  position: absolute;
+  inset: 3px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 3px,
+    rgba(255, 255, 255, 0.02) 3px,
+    rgba(255, 255, 255, 0.02) 6px
+  );
+}
+
+.sim-card-rank {
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.sim-card-suit {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+/* Result */
+.sim-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 24px;
+  border-radius: 8px;
+  margin: 8px 0;
+  animation: fadeIn 0.2s ease both;
+}
+
+.sim-result-win {
+  background: rgba(93, 191, 126, 0.06);
+}
+
+.sim-result-lose {
+  background: rgba(191, 107, 107, 0.06);
+}
+
+.sim-result-push {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.sim-result-text {
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.sim-result-win .sim-result-text { color: #5DBF7E; }
+.sim-result-lose .sim-result-text { color: #BF6B6B; }
+.sim-result-push .sim-result-text { color: rgba(255, 255, 255, 0.4); }
+
+.sim-result-payout {
+  font-size: 0.72rem;
+  font-weight: 500;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.sim-result-win .sim-result-payout { color: rgba(93, 191, 126, 0.6); }
+.sim-result-lose .sim-result-payout { color: rgba(191, 107, 107, 0.5); }
+.sim-result-push .sim-result-payout { color: rgba(255, 255, 255, 0.2); }
+
+/* Actions */
+.sim-actions {
+  margin: 8px 0;
+  display: flex;
+  justify-content: center;
+  min-height: 48px;
+}
+
+.sim-action-btns {
+  display: flex;
+  gap: 1px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.sim-action-btn {
+  padding: 11px 22px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  border: none;
+}
+
+.sim-btn-hit {
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+}
+
+.sim-btn-hit:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sim-btn-stand {
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.sim-btn-stand:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.sim-btn-double {
+  background: rgba(93, 191, 126, 0.05);
+  color: #5DBF7E;
+}
+
+.sim-btn-double:hover {
+  background: rgba(93, 191, 126, 0.1);
+}
+
+.sim-waiting {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.2);
+  padding: 12px;
+  animation: fadeIn 0.2s ease both;
+}
+
+.sim-continue-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 11px 32px;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sim-continue-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Reshuffle */
+.sim-reshuffle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.sim-reshuffle-icon {
+  font-size: 2.5rem;
+  opacity: 0.4;
+}
+
+.sim-reshuffle-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.sim-reshuffle-text {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.3);
+  text-align: center;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 280px;
+}
+
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (max-width: 420px) {
   .cc-topbar-stats {
@@ -683,5 +1700,19 @@
   }
   .cc-stat-val {
     font-size: 0.68rem;
+  }
+  .sim-card {
+    width: 48px;
+    height: 66px;
+  }
+  .sim-card-rank {
+    font-size: 0.92rem;
+  }
+  .sim-card-suit {
+    font-size: 1rem;
+  }
+  .sim-action-btn {
+    padding: 10px 16px;
+    font-size: 0.78rem;
   }
 }

@@ -4,42 +4,15 @@ import "./Blackjack.css";
 import { BalanceContext } from "../../context/BalanceContext";
 import { useAuth } from "../../context/AuthContext";
 import { updateStats, updateBiggestWin } from "../../utils/statsHelpers";
+import { buildDeck, handTotal as total, isBlackjack, isRed } from "../../utils/deckUtils";
 import ConsciousCash from "../ConsciousCash/ConsciousCash";
 
-// ─── Deck utilities ───────────────────────────────────────────────────────────
-let _cardId = 0;
-const uid = () => ++_cardId;
-
-const buildDeck = () => {
-  const suits = ["♠", "♥", "♦", "♣"];
-  const ranks = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
-  const deck = [];
-  for (const suit of suits)
-    for (const rank of ranks)
-      deck.push({ id: uid(), suit, rank });
-  for (let i = deck.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [deck[i], deck[j]] = [deck[j], deck[i]];
-  }
-  return deck;
-};
-
-const rankVal = r => r === "A" ? 11 : ["J","Q","K"].includes(r) ? 10 : +r;
-
-const total = hand => {
-  let t = 0, aces = 0;
-  for (const c of hand) { t += rankVal(c.rank); if (c.rank === "A") aces++; }
-  while (t > 21 && aces-- > 0) t -= 10;
-  return t;
-};
-
-const isBlackjack = hand => hand.length === 2 && total(hand) === 21;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 // ─── Card component ───────────────────────────────────────────────────────────
 const Card = ({ card }) => {
   if (card.faceDown) return <div className="bjc bjc-back" />;
-  const red = card.suit === "♥" || card.suit === "♦";
+  const red = isRed(card);
   return (
     <div className={`bjc ${red ? "bjc-red" : "bjc-black"}`}>
       <div className="bjc-corner bjc-tl">{card.rank}<br />{card.suit}</div>
