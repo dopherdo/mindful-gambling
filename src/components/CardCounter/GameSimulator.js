@@ -185,8 +185,6 @@ const GameSimulator = ({ deckCount, onEnd, onBack }) => {
   }, []);
 
   // ── Count Check (Running Count + Decks Remaining) ──────────────────────
-  const shouldCheckCount = roundNum > 0 && roundNum % COUNT_CHECK_INTERVAL === 0;
-
   const submitCountCheck = () => {
     const userRC = parseInt(countInput, 10);
     const userDecks = parseFloat(decksInput);
@@ -636,7 +634,6 @@ const GameSimulator = ({ deckCount, onEnd, onBack }) => {
 
   // ── Render: Playing / Dealer Turn / Result ─────────────────────────────
   const playerTotal = handTotal(playerHand);
-  const dealerTotal = dealerHidden ? rankVal(dealerHand[0]?.rank) : handTotal(dealerHand);
   const canDouble = playerHand.length === 2 && !hasDoubled && bankroll >= bet;
 
   return (
