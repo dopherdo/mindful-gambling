@@ -130,11 +130,13 @@ const GameSimulator = ({ deckCount, onEnd, onBack }) => {
   const [roundResult, setRoundResult] = useState(null); // { outcome, payout }
   const [hasDoubled, setHasDoubled] = useState(false);
 
-  // Count accuracy
+  // Count accuracy (running count + decks remaining)
   const [countInput, setCountInput] = useState("");
+  const [decksInput, setDecksInput] = useState("");
   const [countChecks, setCountChecks] = useState(0);
   const [countCorrect, setCountCorrect] = useState(0);
   const [lastCountResult, setLastCountResult] = useState(null);
+  const COUNT_CHECK_INTERVAL = 5; // check every N hands
 
   // Decision accuracy
   const [decisionTotal, setDecisionTotal] = useState(0);
@@ -182,21 +184,36 @@ const GameSimulator = ({ deckCount, onEnd, onBack }) => {
     return card;
   }, []);
 
-  // ── Count Check ─────────────────────────────────────────────────────────
+  // ── Count Check (Running Count + Decks Remaining) ──────────────────────
+  const shouldCheckCount = roundNum > 0 && roundNum % COUNT_CHECK_INTERVAL === 0;
+
   const submitCountCheck = () => {
-    const userTC = parseFloat(countInput);
-    if (isNaN(userTC)) return;
-    // Allow within 0.5 margin
-    const isCorrect = Math.abs(userTC - actualTC) <= 0.5;
+    const userRC = parseInt(countInput, 10);
+    const userDecks = parseFloat(decksInput);
+    if (isNaN(userRC)) return;
+
+    // RC must be exact, decks remaining within 0.5
+    const rcCorrect = userRC === actualRC;
+    const decksCorrect = !isNaN(userDecks) && Math.abs(userDecks - decksRemaining) <= 0.5;
+    const isCorrect = rcCorrect && decksCorrect;
+
     setCountChecks(prev => prev + 1);
     if (isCorrect) setCountCorrect(prev => prev + 1);
-    setLastCountResult({ isCorrect, userTC, actualTC });
+    setLastCountResult({
+      isCorrect,
+      rcCorrect,
+      decksCorrect,
+      userRC,
+      actualRC,
+      userDecks,
+      actualDecks: Math.round(decksRemaining * 10) / 10,
+    });
     setCountInput("");
-    // Move to betting
+    setDecksInput("");
     setTimeout(() => {
       setLastCountResult(null);
       setPhase("betting");
-    }, 1200);
+    }, 1500);
   };
 
   // ── Deal a new round ───────────────────────────────────────────────────
@@ -348,11 +365,17 @@ const GameSimulator = ({ deckCount, onEnd, onBack }) => {
     if (bankroll <= 0) {
       setBankroll(1000);
     }
-    setPhase("count-check");
+    // Only do count check every N hands
+    const nextRoundNum = roundNum + 1;
+    if (nextRoundNum > 0 && nextRoundNum % COUNT_CHECK_INTERVAL === 0) {
+      setPhase("count-check");
+    } else {
+      setPhase("betting");
+    }
   };
 
   const afterReshuffle = () => {
-    setPhase("count-check");
+    setPhase("betting");
   };
 
   // ── Render: Reshuffle ──────────────────────────────────────────────────
@@ -414,33 +437,51 @@ const GameSimulator = ({ deckCount, onEnd, onBack }) => {
         </div>
 
         <div className="sim-count-check">
-          <h2 className="sim-cc-title">What's the True Count?</h2>
+          <h2 className="sim-cc-title">Count Check</h2>
           <p className="sim-cc-subtitle">{cardsDealt} cards dealt from {deckCount}-deck shoe</p>
 
           {lastCountResult ? (
             <div className={`sim-cc-result ${lastCountResult.isCorrect ? "sim-cc-correct" : "sim-cc-wrong"}`}>
               {lastCountResult.isCorrect
-                ? "Correct!"
-                : `TC is ${lastCountResult.actualTC > 0 ? "+" : ""}${lastCountResult.actualTC}`
+                ? "Both correct!"
+                : <>
+                    RC: {lastCountResult.rcCorrect ? "Correct" : `${lastCountResult.actualRC > 0 ? "+" : ""}${lastCountResult.actualRC}`}
+                    {" / "}
+                    Decks: {lastCountResult.decksCorrect ? "Correct" : `${lastCountResult.actualDecks}`}
+                  </>
               }
             </div>
           ) : (
             <>
-              <div className="sim-cc-input-row">
-                <input
-                  type="number"
-                  step="0.5"
-                  className="sim-cc-input"
-                  value={countInput}
-                  onChange={(e) => setCountInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && submitCountCheck()}
-                  placeholder="0"
-                  autoFocus
-                />
+              <div className="sim-cc-fields">
+                <div className="sim-cc-field">
+                  <label className="sim-cc-field-label">Running Count</label>
+                  <input
+                    type="number"
+                    className="sim-cc-input"
+                    value={countInput}
+                    onChange={(e) => setCountInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && decksInput && submitCountCheck()}
+                    placeholder="0"
+                    autoFocus
+                  />
+                </div>
+                <div className="sim-cc-field">
+                  <label className="sim-cc-field-label">Decks Left</label>
+                  <input
+                    type="number"
+                    step="0.5"
+                    className="sim-cc-input"
+                    value={decksInput}
+                    onChange={(e) => setDecksInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && countInput && submitCountCheck()}
+                    placeholder={String(deckCount)}
+                  />
+                </div>
                 <button className="sim-cc-submit" onClick={submitCountCheck}>Check</button>
               </div>
 
-              {/* True count peek */}
+              {/* Peek at running count */}
               <button
                 className="sim-tc-peek"
                 onMouseDown={() => setShowTrueCount(true)}
@@ -451,7 +492,7 @@ const GameSimulator = ({ deckCount, onEnd, onBack }) => {
               >
                 {showTrueCount ? (
                   <span className="sim-tc-value">
-                    TC: {actualTC > 0 ? "+" : ""}{actualTC}
+                    RC: {actualRC > 0 ? "+" : ""}{actualRC} / {Math.round(decksRemaining * 10) / 10}d left
                   </span>
                 ) : (
                   <>
@@ -465,10 +506,6 @@ const GameSimulator = ({ deckCount, onEnd, onBack }) => {
                 )}
               </button>
             </>
-          )}
-
-          {roundNum === 0 && cardsDealt === 0 && (
-            <p className="sim-cc-hint">No cards dealt yet — the count is 0</p>
           )}
         </div>
 
@@ -565,7 +602,7 @@ const GameSimulator = ({ deckCount, onEnd, onBack }) => {
           >
             {showTrueCount ? (
               <span className="sim-tc-value">
-                TC: {actualTC > 0 ? "+" : ""}{actualTC}
+                RC: {actualRC > 0 ? "+" : ""}{actualRC} / {Math.round(decksRemaining * 10) / 10}d left
               </span>
             ) : (
               <>
