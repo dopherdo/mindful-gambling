@@ -4,6 +4,7 @@ import { BalanceContext } from "../../context/BalanceContext";
 import { useAuth } from "../../context/AuthContext";
 import { updateStats, updateBiggestWin } from "../../utils/statsHelpers";
 import ConsciousCash from "../ConsciousCash/ConsciousCash";
+import BJCentralBack from "../BJCentralBack/BJCentralBack";
 
 //CSS file
 import "./Roulette.css";
@@ -79,6 +80,7 @@ const Roulette = () => {
 
     return (
         <div className="roulette-game">
+            <BJCentralBack to="/mindful" />
             <h1>Mindful Roulette</h1>
             <div className="balance-section">
                 <ConsciousCash />

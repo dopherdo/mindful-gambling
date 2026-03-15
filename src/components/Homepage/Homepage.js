@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import "./Homepage.css";
 import { useAuth } from "../../context/AuthContext";
 import { GAMES } from "../../config/gameNames";
+import { useTransitionNavigate } from "../PageTransition/PageTransition";
 import ConsciousCash from "../ConsciousCash/ConsciousCash";
 import BJCentralBack from "../BJCentralBack/BJCentralBack";
 
 const Homepage = () => {
   const navigate = useNavigate();
+  const transitionNav = useTransitionNavigate();
   const { currentUser, logout } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -68,10 +70,10 @@ const Homepage = () => {
       </div>
 
       <div className="game-options">
-        <button className="game-card" onClick={() => navigate("/mindful/blackjack")}>
+        <button className="game-card" onClick={() => transitionNav("/mindful/blackjack")}>
           <span className="game-card-label">Blackjack</span>
         </button>
-        <button className="game-card" onClick={() => navigate("/mindful/roulette")}>
+        <button className="game-card" onClick={() => transitionNav("/mindful/roulette")}>
           <span className="game-card-label">Roulette</span>
         </button>
       </div>

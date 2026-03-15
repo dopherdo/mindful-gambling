@@ -4,6 +4,7 @@ import { doc, onSnapshot, updateDoc, collection, query, where, getDocs } from "f
 import { updateProfile } from "firebase/auth";
 import { db, auth } from "../../firebase";
 import { useAuth } from "../../context/AuthContext";
+import BJCentralBack from "../BJCentralBack/BJCentralBack";
 import "./Profile.css";
 
 const Profile = () => {
@@ -73,7 +74,7 @@ const Profile = () => {
   return (
     <div className="profile-page">
       <div className="profile-header">
-        <button className="back-button" onClick={() => navigate("/")}>Back</button>
+        <BJCentralBack />
         <button className="logout-button" onClick={handleLogout}>Sign Out</button>
       </div>
 

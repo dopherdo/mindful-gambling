@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "../context/AuthContext";
 import { BalanceProvider } from "../context/BalanceContext";
+import { PageTransitionProvider } from "./PageTransition/PageTransition";
 import BJCentral from "./BJCentral/BJCentral";
 import Homepage from "./Homepage/Homepage";
 import Blackjack from "./Blackjack/Blackjack";
@@ -18,6 +19,7 @@ function App() {
     <AuthProvider>
       <BalanceProvider>
         <Router>
+          <PageTransitionProvider>
           <Routes>
             <Route path="/" element={<BJCentral />} />
             <Route path="/mindful" element={<Homepage />} />
@@ -30,6 +32,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/achievements" element={<Achievements />} />
           </Routes>
+          </PageTransitionProvider>
         </Router>
       </BalanceProvider>
     </AuthProvider>

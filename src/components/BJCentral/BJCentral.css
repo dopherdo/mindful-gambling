@@ -37,13 +37,17 @@
   text-align: center;
   margin-bottom: 3rem;
   animation: pageEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .bjcentral-title {
   font-size: clamp(3rem, 12vw, 6.5rem);
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 0.6rem;
+  margin: 0 0 0.3rem;
   letter-spacing: -0.06em;
   line-height: 0.85;
 }

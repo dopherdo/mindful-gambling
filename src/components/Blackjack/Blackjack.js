@@ -6,6 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { updateStats, updateBiggestWin } from "../../utils/statsHelpers";
 import { buildDeck, handTotal as total, isBlackjack, isRed } from "../../utils/deckUtils";
 import ConsciousCash from "../ConsciousCash/ConsciousCash";
+import BJCentralBack from "../BJCentralBack/BJCentralBack";
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -342,6 +343,7 @@ const Blackjack = () => {
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className={`blackjack-game${inGame ? " bj-ingame" : ""}`}>
+      <BJCentralBack to="/mindful" />
       <h1 className={`bj-title${inGame ? " bj-title-top" : ""}`}>
         Mindful Blackjack
       </h1>

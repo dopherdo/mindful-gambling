@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useAuth } from "../../context/AuthContext";
 import allAchievements, { getRank, gameAchievements } from "../../config/achievements";
+import BJCentralBack from "../BJCentralBack/BJCentralBack";
 import "./Achievements.css";
 
 const Achievements = () => {
-  const navigate = useNavigate();
   const { currentUser } = useAuth();
   const [userData, setUserData] = useState(null);
 
@@ -23,7 +22,7 @@ const Achievements = () => {
     return (
       <div className="ach-page">
         <div className="ach-header">
-          <button className="ach-back" onClick={() => navigate("/")}>Back</button>
+          <BJCentralBack />
           <h1 className="ach-title">Achievements</h1>
         </div>
         <p className="ach-empty">Sign in to track your achievements.</p>
@@ -64,7 +63,7 @@ const Achievements = () => {
   return (
     <div className="ach-page">
       <div className="ach-header">
-        <button className="ach-back" onClick={() => navigate("/")}>Back</button>
+        <BJCentralBack />
         <h1 className="ach-title">Achievements</h1>
       </div>
 

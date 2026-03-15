@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { APP_NAME, GAMES } from "../../config/gameNames";
+import { useTransitionNavigate } from "../PageTransition/PageTransition";
 import Logo from "../Logo/Logo";
 import "./BJCentral.css";
 
 const BJCentral = () => {
   const navigate = useNavigate();
+  const transitionNav = useTransitionNavigate();
   const { currentUser, login, register, loginWithGoogle } = useAuth();
 
   // Popup state: "signin" | "warning" | null
@@ -110,18 +112,18 @@ const BJCentral = () => {
       </div>
 
       <div className="bjcentral-modes">
-        <button className="mode-card" onClick={() => navigate(GAMES.cardCounter.path)}>
+        <button className="mode-card" onClick={() => transitionNav(GAMES.cardCounter.path)}>
           <h2 className="mode-title">{GAMES.cardCounter.name}</h2>
           <p className="mode-desc">{GAMES.cardCounter.desc}</p>
         </button>
 
-        <button className="mode-card" onClick={() => navigate(GAMES.mindful.path)}>
+        <button className="mode-card" onClick={() => transitionNav(GAMES.mindful.path)}>
           <h2 className="mode-title">{GAMES.mindful.name}</h2>
           <p className="mode-desc">{GAMES.mindful.desc}</p>
         </button>
       </div>
 
-      <button className="bjcentral-achievements" onClick={() => navigate("/achievements")}>
+      <button className="bjcentral-achievements" onClick={() => transitionNav("/achievements")}>
         Achievements
       </button>
 
