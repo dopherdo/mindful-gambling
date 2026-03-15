@@ -89,8 +89,11 @@ const BJCentral = () => {
 
   return (
     <div className="bjcentral-page">
-      <div className="bjcentral-topbar">
-        <div className="bjcentral-topbar-right">
+      <div className="app-topbar">
+        <div className="app-topbar-left">
+          <Logo size={28} />
+        </div>
+        <div className="app-topbar-right">
           {currentUser ? (
             <button className="profile-icon-btn" onClick={() => navigate("/profile")} title="Profile">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -106,7 +109,6 @@ const BJCentral = () => {
       </div>
 
       <div className="bjcentral-hero">
-        <Logo size={72} animate />
         <h1 className="bjcentral-title">{APP_NAME}</h1>
         <p className="bjcentral-sub">Your blackjack hub</p>
       </div>

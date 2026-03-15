@@ -343,13 +343,14 @@ const Blackjack = () => {
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className={`blackjack-game${inGame ? " bj-ingame" : ""}`}>
-      <BJCentralBack to="/mindful" />
-      <h1 className={`bj-title${inGame ? " bj-title-top" : ""}`}>
-        Mindful Blackjack
-      </h1>
-
-      <div className="balance-section">
-        <ConsciousCash />
+      <div className="app-topbar">
+        <div className="app-topbar-left">
+          <BJCentralBack to="/mindful" />
+          <span className="app-topbar-title">Blackjack</span>
+        </div>
+        <div className="app-topbar-right">
+          <ConsciousCash />
+        </div>
       </div>
 
       {/* Betting screen */}

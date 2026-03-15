@@ -50,12 +50,45 @@ html, body {
 
 /* ── Shared navigation ───────────────────────────────────────────────────── */
 
+/* ── Shared app topbar ─────────────────────────────────────────────────── */
+.app-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 52px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 max(14px, calc(50% - 340px));
+  z-index: 50;
+  box-sizing: border-box;
+}
+
+.app-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.app-topbar-title {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: -0.01em;
+}
+
 .bj-central-back {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-subtle);
+  background: transparent;
+  border: none;
   color: var(--text-primary);
   width: 36px;
   height: 36px;
@@ -65,20 +98,16 @@ html, body {
   justify-content: center;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.25s ease;
-  z-index: 10;
+  transition: all 0.2s ease;
 }
 
 .bj-central-back:hover {
   background: var(--bg-active);
-  border-color: var(--border-default);
-  transform: scale(1.06);
+  transform: scale(1.08);
 }
 
 .profile-icon-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
+  position: static;
   background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
   color: var(--text-secondary);

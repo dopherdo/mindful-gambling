@@ -73,9 +73,14 @@ const Profile = () => {
 
   return (
     <div className="profile-page">
-      <div className="profile-header">
-        <BJCentralBack />
-        <button className="logout-button" onClick={handleLogout}>Sign Out</button>
+      <div className="app-topbar">
+        <div className="app-topbar-left">
+          <BJCentralBack />
+          <span className="app-topbar-title">Profile</span>
+        </div>
+        <div className="app-topbar-right">
+          <button className="logout-button" onClick={handleLogout}>Sign Out</button>
+        </div>
       </div>
 
       <div className="profile-identity">

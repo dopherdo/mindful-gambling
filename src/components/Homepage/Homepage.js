@@ -28,9 +28,11 @@ const Homepage = () => {
 
   return (
     <div className="homepage">
-      <div className="page-topbar">
-        <BJCentralBack />
-        <div className="topbar-right">
+      <div className="app-topbar">
+        <div className="app-topbar-left">
+          <BJCentralBack />
+        </div>
+        <div className="app-topbar-right">
           <button className="video-button" onClick={() => navigate("/mindful/video")}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style={{ marginRight: "6px" }}>
               <path d="M8 5v14l11-7z"/>

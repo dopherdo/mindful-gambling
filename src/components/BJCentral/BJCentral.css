@@ -5,30 +5,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4rem 1.5rem 3rem;
+  padding: 68px 1.5rem 3rem;
   position: relative;
   overflow: hidden;
 }
 
-.bjcentral-topbar {
-  position: absolute;
-  top: 16px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: flex-end;
-  padding: 0 max(16px, calc(50% - 340px));
-  z-index: 10;
-  box-sizing: border-box;
-}
-
-.bjcentral-topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.bjcentral-topbar .profile-icon-btn {
+.bjcentral-page .profile-icon-btn {
   position: static;
 }
 

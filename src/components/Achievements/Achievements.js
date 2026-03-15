@@ -21,9 +21,11 @@ const Achievements = () => {
   if (!currentUser) {
     return (
       <div className="ach-page">
-        <div className="ach-header">
-          <BJCentralBack />
-          <h1 className="ach-title">Achievements</h1>
+        <div className="app-topbar">
+          <div className="app-topbar-left">
+            <BJCentralBack />
+            <span className="app-topbar-title">Achievements</span>
+          </div>
         </div>
         <p className="ach-empty">Sign in to track your achievements.</p>
       </div>

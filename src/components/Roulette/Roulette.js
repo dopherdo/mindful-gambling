@@ -80,10 +80,14 @@ const Roulette = () => {
 
     return (
         <div className="roulette-game">
-            <BJCentralBack to="/mindful" />
-            <h1>Mindful Roulette</h1>
-            <div className="balance-section">
+            <div className="app-topbar">
+              <div className="app-topbar-left">
+                <BJCentralBack to="/mindful" />
+                <span className="app-topbar-title">Roulette</span>
+              </div>
+              <div className="app-topbar-right">
                 <ConsciousCash />
+              </div>
             </div>
             
             <div className="betting-section">

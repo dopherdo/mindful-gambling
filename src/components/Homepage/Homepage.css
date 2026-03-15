@@ -10,7 +10,7 @@
   font-family: inherit;
   position: relative;
   text-align: center;
-  padding: 60px 24px 40px;
+  padding: 68px 24px 40px;
   box-sizing: border-box;
 }
 
@@ -37,23 +37,7 @@
   color: var(--text-primary);
 }
 
-/* ── Top bar ─────────────────────────────────────────────────────────────── */
-.page-topbar {
-  position: absolute;
-  top: 16px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 max(16px, calc(50% - 340px));
-  z-index: 10;
-  box-sizing: border-box;
-}
-
-.page-topbar .bj-central-back {
-  position: static;
-}
+/* topbar overrides handled by shared .app-topbar */
 
 .topbar-right {
   display: flex;

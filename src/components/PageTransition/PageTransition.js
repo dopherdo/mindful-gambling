@@ -18,22 +18,25 @@ export const useTransitionNavigate = () => {
   }, [ctx, navigate]);
 };
 
-const DURATION_IN = 400;
-const DURATION_OUT = 350;
+const DURATION_IN = 600;   // fade in + logo starts filling
+const DURATION_HOLD = 900; // let the stroke animation play
+const DURATION_OUT = 400;
 
 export const PageTransitionProvider = ({ children }) => {
   const [phase, setPhase] = useState(null); // "in" | "out" | null
   const cbRef = useRef(null);
 
   const start = useCallback((navigateFn) => {
-    if (phase) return; // already transitioning
+    if (phase) return;
     setPhase("in");
     cbRef.current = navigateFn;
 
     setTimeout(() => {
       if (cbRef.current) cbRef.current();
-      setPhase("out");
-      setTimeout(() => setPhase(null), DURATION_OUT);
+      setTimeout(() => {
+        setPhase("out");
+        setTimeout(() => setPhase(null), DURATION_OUT);
+      }, DURATION_HOLD);
     }, DURATION_IN);
   }, [phase]);
 
@@ -43,7 +46,7 @@ export const PageTransitionProvider = ({ children }) => {
       {phase && (
         <div className={`pt-overlay ${phase === "out" ? "pt-exit" : ""}`}>
           <div className="pt-logo">
-            <Logo size={64} animate={phase === "in"} />
+            <Logo size={72} loading />
           </div>
         </div>
       )}

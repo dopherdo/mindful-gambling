@@ -10,7 +10,7 @@
   font-family: inherit;
   text-align: center;
   position: relative;
-  padding: 48px 20px 32px;
+  padding: 68px 20px 32px;
   box-sizing: border-box;
   animation: pageEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
