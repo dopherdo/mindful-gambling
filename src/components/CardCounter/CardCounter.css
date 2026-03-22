@@ -1456,197 +1456,212 @@
   line-height: 1.5;
 }
 
-/* Hands */
-.sim-hand-section {
+/* ── Game table layout (matches main Blackjack UI) ─────────────────────── */
+.sim-content-ingame {
+  padding: 0;
+  justify-content: flex-start;
+}
+
+.sim-game-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  margin: 8px 0;
+  padding: 16px 4px 0;
 }
 
-.sim-hand-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.68rem;
-  font-weight: 400;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.sim-hand-total {
-  font-family: 'Roboto Mono', monospace;
-  font-weight: 600;
-  color: var(--text-primary);
-  font-size: 0.78rem;
-}
-
-.sim-hand-cards {
+.sim-game-stats {
   display: flex;
   gap: 4px;
 }
 
-/* Sim cards */
-.sim-card {
-  width: 56px;
-  height: 78px;
-  border-radius: 6px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1px;
-  user-select: none;
-  animation: cardDeal 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.sim-card-sm {
-  width: 48px;
-  height: 66px;
-}
-
-.sim-card-red {
-  background: #FAF7F2;
-  color: #C41A1A;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-.sim-card-black {
-  background: #FAF7F2;
-  color: #1A1A1A;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-.sim-card-back {
-  background: #1a1a2e;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-  position: relative;
-  overflow: hidden;
-}
-
-.sim-card-back-pattern {
-  position: absolute;
-  inset: 3px;
-  border-radius: 3px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 3px,
-    rgba(255, 255, 255, 0.02) 3px,
-    rgba(255, 255, 255, 0.02) 6px
-  );
-}
-
-.sim-card-rank {
-  font-size: 1.1rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.sim-card-suit {
-  font-size: 1.2rem;
-  line-height: 1;
-}
-
-/* Result */
-.sim-result {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  padding: 10px 24px;
-  border-radius: 8px;
-  margin: 8px 0;
-  animation: fadeIn 0.2s ease both;
-}
-
-.sim-result-win {
-  background: rgba(93, 191, 126, 0.06);
-}
-
-.sim-result-lose {
-  background: rgba(191, 107, 107, 0.06);
-}
-
-.sim-result-push {
+.sim-tc-peek-icon {
   background: rgba(255, 255, 255, 0.03);
-}
-
-.sim-result-text {
-  font-size: 0.92rem;
-  font-weight: 600;
-}
-
-.sim-result-win .sim-result-text { color: #5DBF7E; }
-.sim-result-lose .sim-result-text { color: #BF6B6B; }
-.sim-result-push .sim-result-text { color: var(--text-secondary); }
-
-.sim-result-payout {
-  font-size: 0.72rem;
-  font-weight: 500;
-  font-family: 'Roboto Mono', monospace;
-}
-
-.sim-result-win .sim-result-payout { color: rgba(93, 191, 126, 0.6); }
-.sim-result-lose .sim-result-payout { color: rgba(191, 107, 107, 0.5); }
-.sim-result-push .sim-result-payout { color: var(--text-muted); }
-
-/* Actions */
-.sim-actions {
-  margin: 8px 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  width: 30px;
+  height: 30px;
   display: flex;
+  align-items: center;
   justify-content: center;
-  min-height: 48px;
-}
-
-.sim-action-btns {
-  display: flex;
-  gap: 1px;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.sim-action-btn {
-  padding: 11px 22px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  font-family: inherit;
+  color: var(--text-muted);
   cursor: pointer;
-  transition: background 0.2s ease;
-  border: none;
+  padding: 0;
+  transition: all 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-.sim-btn-hit {
-  background: rgba(255, 255, 255, 0.04);
-  color: #ffffff;
-}
-
-.sim-btn-hit:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.sim-btn-stand {
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--text-secondary);
-}
-
-.sim-btn-stand:hover {
+.sim-tc-peek-icon:hover {
   background: rgba(255, 255, 255, 0.06);
   color: var(--text-primary);
 }
 
-.sim-btn-double {
-  background: rgba(93, 191, 126, 0.05);
-  color: #5DBF7E;
+.sim-game-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+  animation: pageEnter 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.sim-btn-double:hover {
-  background: rgba(93, 191, 126, 0.1);
+.sim-dealer-zone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: clamp(14px, 3vw, 24px);
+  border-bottom: 1px solid var(--border-dim);
+  box-sizing: border-box;
+}
+
+.sim-player-zone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: clamp(14px, 3vw, 24px);
+  gap: clamp(10px, 2.5vw, 18px);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.sim-hand-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.sim-hand-label-row {
+  font-size: clamp(10px, 2vw, 12px);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  transition: color 0.3s ease;
+}
+
+.sim-hand-result-text {
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Result states */
+.sim-hand-win  { border-color: rgba(74, 138, 92, 0.3); background: rgba(74, 138, 92, 0.05); }
+.sim-hand-win .sim-hand-label-row { color: #5DBF7E; }
+
+.sim-hand-loss { border-color: rgba(138, 68, 68, 0.3); background: rgba(138, 68, 68, 0.05); }
+.sim-hand-loss .sim-hand-label-row { color: #BF6B6B; }
+
+.sim-hand-push { border-color: rgba(138, 122, 68, 0.25); background: rgba(138, 122, 68, 0.04); }
+.sim-hand-push .sim-hand-label-row { color: #C4A855; }
+
+.sim-cards-row {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+/* ── Playing cards (matches main Blackjack cards) ──────────────────────── */
+.sim-bjc {
+  width: clamp(44px, 9vw, 58px);
+  height: clamp(62px, 12.6vw, 82px);
+  background: #FAF7F2;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4px 5px;
+  box-sizing: border-box;
+  animation: cardDeal 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  flex-shrink: 0;
+  user-select: none;
+  position: relative;
+}
+
+.sim-bjc-red   { color: #C41A1A; }
+.sim-bjc-black { color: #1A1A1A; }
+
+.sim-bjc-corner {
+  font-size: clamp(9px, 1.9vw, 12px);
+  font-weight: 700;
+  line-height: 1.1;
+  font-family: inherit;
+}
+
+.sim-bjc-tl { text-align: left; }
+.sim-bjc-br { text-align: right; transform: rotate(180deg); }
+
+.sim-bjc-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(14px, 3.5vw, 20px);
+  line-height: 1;
+}
+
+.sim-bjc-back {
+  background: var(--bg-elevated);
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255, 248, 235, 0.02) 0,
+      rgba(255, 248, 235, 0.02) 1px,
+      transparent 1px,
+      transparent 9px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 248, 235, 0.02) 0,
+      rgba(255, 248, 235, 0.02) 1px,
+      transparent 1px,
+      transparent 9px
+    );
+  border: 1px solid var(--border-subtle);
+}
+
+/* ── Game action buttons (matches main Blackjack) ──────────────────────── */
+.sim-game-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+}
+
+.sim-game-actions button {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-dim);
+  color: var(--text-primary);
+  padding: 8px clamp(14px, 3vw, 20px);
+  font-size: clamp(12px, 2.5vw, 13px);
+  font-weight: 500;
+  font-family: inherit;
+  letter-spacing: 0.01em;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sim-game-actions button:hover:not(:disabled) {
+  background: var(--bg-elevated);
+  border-color: var(--border-subtle);
+}
+
+.sim-game-actions button:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
 }
 
 .sim-waiting {
@@ -1719,18 +1734,8 @@
   .cc-stat-val {
     font-size: 0.68rem;
   }
-  .sim-card {
-    width: 48px;
-    height: 66px;
-  }
-  .sim-card-rank {
-    font-size: 0.92rem;
-  }
-  .sim-card-suit {
-    font-size: 1rem;
-  }
-  .sim-action-btn {
-    padding: 10px 16px;
-    font-size: 0.78rem;
+  .sim-game-actions button {
+    padding: 7px 12px;
+    font-size: clamp(11px, 2.5vw, 12px);
   }
 }

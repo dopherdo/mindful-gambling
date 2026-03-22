@@ -68,21 +68,18 @@ const getBetRecommendation = (tc) => {
   return { units: 10, label: "10 units", desc: "Maximum edge" };
 };
 
-// ─── Card display ───────────────────────────────────────────────────────────
-const SimCard = ({ card, faceDown, small }) => {
+// ─── Card display (matches main Blackjack UI) ──────────────────────────────
+const SimCard = ({ card, faceDown }) => {
   if (faceDown) {
-    return (
-      <div className={`sim-card sim-card-back ${small ? "sim-card-sm" : ""}`}>
-        <div className="sim-card-back-pattern" />
-      </div>
-    );
+    return <div className="sim-bjc sim-bjc-back" />;
   }
   if (!card) return null;
   const red = isRed(card);
   return (
-    <div className={`sim-card ${red ? "sim-card-red" : "sim-card-black"} ${small ? "sim-card-sm" : ""}`}>
-      <span className="sim-card-rank">{card.rank}</span>
-      <span className="sim-card-suit">{card.suit}</span>
+    <div className={`sim-bjc ${red ? "sim-bjc-red" : "sim-bjc-black"}`}>
+      <div className="sim-bjc-corner sim-bjc-tl">{card.rank}<br />{card.suit}</div>
+      <div className="sim-bjc-center">{card.suit}</div>
+      <div className="sim-bjc-corner sim-bjc-br">{card.rank}<br />{card.suit}</div>
     </div>
   );
 };
@@ -636,18 +633,46 @@ const GameSimulator = ({ deckCount, onEnd, onBack }) => {
   const playerTotal = handTotal(playerHand);
   const canDouble = playerHand.length === 2 && !hasDoubled && bankroll >= bet;
 
+  // Determine result class for player hand
+  const resultClass = !roundResult ? "" :
+    (roundResult.outcome === "win" || roundResult.outcome === "blackjack") ? " sim-hand-win" :
+    roundResult.outcome === "push" ? " sim-hand-push" : " sim-hand-loss";
+
   return (
-    <div className="sim-content">
-      <div className="sim-topbar">
+    <div className="sim-content sim-content-ingame">
+      {/* Top bar */}
+      <div className="sim-game-topbar">
         <button className="cc-end-btn" onClick={onEnd}>End</button>
-        <div className="sim-round-pill">
-          <span className="cc-stat-label">Bet</span>
-          <span className="cc-stat-val">${bet}</span>
+        <div className="sim-game-stats">
+          <div className="cc-stat-pill">
+            <span className="cc-stat-label">Bet</span>
+            <span className="cc-stat-val">${bet}</span>
+          </div>
+          <div className="cc-stat-pill">
+            <span className="cc-stat-label">Bank</span>
+            <span className="cc-stat-val">${bankroll}</span>
+          </div>
         </div>
-        <div className="sim-bankroll-pill">
-          <span className="cc-stat-label">Bank</span>
-          <span className="cc-stat-val">${bankroll}</span>
-        </div>
+        <button
+          className="sim-tc-peek-icon"
+          onMouseDown={() => setShowTrueCount(true)}
+          onMouseUp={() => setShowTrueCount(false)}
+          onMouseLeave={() => setShowTrueCount(false)}
+          onTouchStart={() => setShowTrueCount(true)}
+          onTouchEnd={() => setShowTrueCount(false)}
+        >
+          {showTrueCount ? (
+            <span className="sim-tc-value" style={{ fontSize: "0.68rem" }}>
+              TC {actualTC > 0 ? "+" : ""}{actualTC}
+            </span>
+          ) : (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+              <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          )}
+        </button>
       </div>
 
       {/* Accuracy bars */}
@@ -678,105 +703,67 @@ const GameSimulator = ({ deckCount, onEnd, onBack }) => {
         </div>
       </div>
 
-      {/* Dealer hand */}
-      <div className="sim-hand-section">
-        <div className="sim-hand-label">
-          <span>Dealer</span>
-          <span className="sim-hand-total">
-            {dealerHidden ? rankVal(dealerHand[0]?.rank) : handTotal(dealerHand)}
-          </span>
-        </div>
-        <div className="sim-hand-cards">
-          {dealerHand.map((card, i) => (
-            <SimCard
-              key={card.id}
-              card={card}
-              faceDown={dealerHidden && i === 1}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Player hand */}
-      <div className="sim-hand-section">
-        <div className="sim-hand-label">
-          <span>You</span>
-          <span className="sim-hand-total">{playerTotal}</span>
-        </div>
-        <div className="sim-hand-cards">
-          {playerHand.map(card => (
-            <SimCard key={card.id} card={card} />
-          ))}
-        </div>
-      </div>
-
-      {/* Result */}
-      {phase === "result" && roundResult && (
-        <div className={`sim-result ${
-          roundResult.outcome === "win" || roundResult.outcome === "blackjack" ? "sim-result-win" :
-          roundResult.outcome === "push" ? "sim-result-push" : "sim-result-lose"
-        }`}>
-          <span className="sim-result-text">
-            {roundResult.outcome === "blackjack" ? "Blackjack!" :
-             roundResult.outcome === "dealer-bj" ? "Dealer Blackjack" :
-             roundResult.outcome === "bust" ? "Bust" :
-             roundResult.outcome === "win" ? "You Win" :
-             roundResult.outcome === "push" ? "Push" : "Dealer Wins"}
-          </span>
-          <span className="sim-result-payout">
-            {roundResult.payout > 0 ? "+" : ""}{roundResult.payout !== 0 ? `$${roundResult.payout}` : "$0"}
-          </span>
-        </div>
-      )}
-
-      {/* Action buttons */}
-      <div className="sim-actions">
-        {phase === "playing" && (
-          <div className="sim-action-btns">
-            <button className="sim-action-btn sim-btn-hit" onClick={() => handleAction("H")}>
-              Hit
-            </button>
-            <button className="sim-action-btn sim-btn-stand" onClick={() => handleAction("S")}>
-              Stand
-            </button>
-            {canDouble && (
-              <button className="sim-action-btn sim-btn-double" onClick={() => handleAction("D")}>
-                Double
-              </button>
-            )}
+      {/* Game table area */}
+      <div className="sim-game-area">
+        {/* Dealer zone */}
+        <div className="sim-dealer-zone">
+          <div className="sim-hand-area">
+            <div className="sim-hand-label-row">
+              Dealer{!dealerHidden ? ` — ${handTotal(dealerHand)}` : ""}
+            </div>
+            <div className="sim-cards-row">
+              {dealerHand.map((card, i) => (
+                <SimCard
+                  key={card.id}
+                  card={card}
+                  faceDown={dealerHidden && i === 1}
+                />
+              ))}
+            </div>
           </div>
-        )}
-        {phase === "dealer-turn" && (
-          <div className="sim-waiting">Dealer playing...</div>
-        )}
-        {phase === "result" && (
-          <button className="sim-continue-btn" onClick={nextRound}>
-            Next Hand
-          </button>
-        )}
-      </div>
+        </div>
 
-      {/* True count peek */}
-      <button
-        className="sim-tc-peek sim-tc-peek-mini"
-        onMouseDown={() => setShowTrueCount(true)}
-        onMouseUp={() => setShowTrueCount(false)}
-        onMouseLeave={() => setShowTrueCount(false)}
-        onTouchStart={() => setShowTrueCount(true)}
-        onTouchEnd={() => setShowTrueCount(false)}
-      >
-        {showTrueCount ? (
-          <span className="sim-tc-value">
-            TC: {actualTC > 0 ? "+" : ""}{actualTC}
-          </span>
-        ) : (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-            <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-            <line x1="1" y1="1" x2="23" y2="23"/>
-          </svg>
-        )}
-      </button>
+        {/* Player zone */}
+        <div className="sim-player-zone">
+          <div className={`sim-hand-area${resultClass}`}>
+            <div className="sim-hand-label-row">
+              You — {playerTotal}
+              {phase === "result" && roundResult && (
+                <span className="sim-hand-result-text">
+                  {" · "}
+                  {roundResult.outcome === "blackjack" ? `Blackjack! +$${roundResult.payout}` :
+                   roundResult.outcome === "dealer-bj" ? "Dealer Blackjack" :
+                   roundResult.outcome === "bust" ? "Bust" :
+                   roundResult.outcome === "win" ? `Win +$${roundResult.payout}` :
+                   roundResult.outcome === "push" ? "Push" : "Loss"}
+                </span>
+              )}
+            </div>
+            <div className="sim-cards-row">
+              {playerHand.map(card => (
+                <SimCard key={card.id} card={card} />
+              ))}
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          {phase === "playing" && (
+            <div className="sim-game-actions">
+              <button onClick={() => handleAction("H")}>Hit</button>
+              <button onClick={() => handleAction("S")}>Stand</button>
+              <button onClick={() => handleAction("D")} disabled={!canDouble}>Double</button>
+            </div>
+          )}
+          {phase === "dealer-turn" && (
+            <div className="sim-waiting">Dealer playing...</div>
+          )}
+          {phase === "result" && (
+            <button className="sim-continue-btn" onClick={nextRound}>
+              Next Hand
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
