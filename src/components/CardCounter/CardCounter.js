@@ -399,6 +399,7 @@ const CardCounter = () => {
   // ═══════════════════════════════════════════════════════════════════════
   return (
     <div className="cc-page">
+      <div className="cc-playing-content">
       {/* Top bar */}
       <div className="cc-topbar">
         <button className="cc-end-btn" onClick={endSession}>End</button>
@@ -509,6 +510,7 @@ const CardCounter = () => {
       {/* Score line */}
       <div className="cc-score-line">
         {correctCount}/{totalDecisions} correct
+      </div>
       </div>
     </div>
   );
